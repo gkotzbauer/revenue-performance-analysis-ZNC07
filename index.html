@@ -518,20 +518,16 @@
             
             document.getElementById('loadingSection').classList.remove('hidden');
             
-            // Load the pre-configured Excel file from the repository
-            fetch('data/revenue-data.xlsx')
+            // Try loading JSON first (better for Vercel), then fall back to Excel
+            fetch('data/revenue-data.json')
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Data file not found. Please contact administrator.');
+                        throw new Error('JSON data file not found, trying Excel...');
                     }
-                    return response.arrayBuffer();
+                    return response.json();
                 })
-                .then(data => {
-                    console.log('=== PRE-CONFIGURED DATA LOADED ===');
-                    
-                    var workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
-                    var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                    var jsonData = XLSX.utils.sheet_to_json(firstSheet);
+                .then(jsonData => {
+                    console.log('=== PRE-CONFIGURED JSON DATA LOADED ===');
                     
                     originalData = jsonData;
                     filteredData = originalData.slice();
@@ -545,11 +541,41 @@
                     document.getElementById('dashboardContent').classList.remove('hidden');
                 })
                 .catch(error => {
+                    console.log('JSON loading failed, trying Excel:', error.message);
+                    
+                    // Fall back to Excel file
+                    return fetch('data/revenue-data.xlsx')
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Data file not found. Please contact administrator.');
+                            }
+                            return response.arrayBuffer();
+                        })
+                        .then(data => {
+                            console.log('=== PRE-CONFIGURED EXCEL DATA LOADED ===');
+                            
+                            var workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
+                            var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                            var jsonData = XLSX.utils.sheet_to_json(firstSheet);
+                            
+                            originalData = jsonData;
+                            filteredData = originalData.slice();
+                            
+                            console.log('Total rows loaded:', jsonData.length);
+                            console.log('Sample row:', jsonData[0]);
+                            
+                            // Initialize dashboard with pre-loaded data
+                            initializeDashboard();
+                            document.getElementById('loadingSection').classList.add('hidden');
+                            document.getElementById('dashboardContent').classList.remove('hidden');
+                        });
+                })
+                .catch(error => {
                     console.error('Error loading pre-configured data:', error);
                     document.getElementById('loadingSection').classList.add('hidden');
                     // Show error in a more user-friendly way
                     document.getElementById('dashboardContent').classList.remove('hidden');
-                    document.getElementById('dashboardContent').innerHTML = '<div class="upload-section"><p style="color: #f56565;">❌ Error loading data: ' + error.message + '</p></div>';
+                    document.getElementById('dashboardContent').innerHTML = '<div class="upload-section"><p style="color: #f56565;">❌ Error loading data: ' + error.message + '</p><p style="color: #667eea; margin-top: 10px;">Please try refreshing the page or contact the administrator.</p></div>';
                 });
         }
 
