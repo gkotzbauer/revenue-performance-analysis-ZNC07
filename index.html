@@ -561,6 +561,10 @@
             
             var statusMsg = 'Processing: ' + escapeHtml(file.name);
             document.getElementById('fileStatus').innerHTML = '<p style="color: #667eea;">' + statusMsg + '</p>';
+            
+            console.log('=== FILE UPLOAD DEBUG ===');
+            console.log('File name:', file.name);
+            console.log('File size:', file.size, 'bytes');
 
             var reader = new FileReader();
             reader.onload = function(e) {
@@ -572,6 +576,18 @@
                     
                     originalData = jsonData;
                     filteredData = originalData.slice();
+                    
+                    console.log('=== DATA LOADED DEBUG ===');
+                    console.log('Total rows loaded:', jsonData.length);
+                    console.log('Sample row:', jsonData[0]);
+                    
+                    // Debug: Check for "What Went Well" and "What Can Be Improved" columns
+                    if (jsonData.length > 0) {
+                        var firstRow = jsonData[0];
+                        console.log('Available columns:', Object.keys(firstRow));
+                        console.log('"What Went Well" sample:', firstRow['What Went Well']);
+                        console.log('"What Can Be Improved" sample:', firstRow['What Can Be Improved']);
+                    }
                     
                     setTimeout(function() {
                         initializeDashboard();
