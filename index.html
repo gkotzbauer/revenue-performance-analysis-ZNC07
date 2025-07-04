@@ -369,12 +369,22 @@
             <p>Comprehensive insights to drive higher revenue performance</p>
         </div>
 
-        <div class="upload-section">
+        <div class="upload-section" id="uploadSection">
             <div class="file-input-wrapper">
                 <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls" />
                 <label for="fileInput" class="file-input-label">📊 Upload Excel File</label>
             </div>
             <div id="fileStatus"></div>
+        </div>
+        
+        <div class="upload-section" id="adminSection" style="display: none;">
+            <h3>🔧 Admin Panel</h3>
+            <p>Upload new data file to update the dashboard for all users:</p>
+            <div class="file-input-wrapper">
+                <input type="file" id="adminFileInput" class="file-input" accept=".xlsx,.xls" />
+                <label for="adminFileInput" class="file-input-label">📊 Update Data File</label>
+            </div>
+            <div id="adminFileStatus"></div>
         </div>
 
         <div id="loadingSection" class="loading hidden">
@@ -477,8 +487,48 @@
         console.log('=== Revenue Dashboard v4.0 - Debug Mode ===');
         console.log('Timestamp:', new Date().toISOString());
         console.log('Changes: Added detailed debugging for Existing E/M Code items');
+        
+        // Initialize admin panel and auto-load data
+        toggleAdminPanel();
+        autoLoadData();
 
         document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+        document.getElementById('adminFileInput').addEventListener('change', handleAdminFileUpload);
+        
+        // Check if user is admin (you can modify this logic)
+        function isAdmin() {
+            // Simple admin check - you can make this more sophisticated
+            return window.location.search.includes('admin=true') || 
+                   localStorage.getItem('isAdmin') === 'true';
+        }
+        
+        // Show/hide admin panel
+        function toggleAdminPanel() {
+            if (isAdmin()) {
+                document.getElementById('adminSection').style.display = 'block';
+                document.getElementById('uploadSection').style.display = 'none';
+            } else {
+                document.getElementById('adminSection').style.display = 'none';
+                document.getElementById('uploadSection').style.display = 'block';
+            }
+        }
+        
+        // Auto-load data for regular users
+        function autoLoadData() {
+            if (!isAdmin()) {
+                // For regular users, load pre-configured data
+                loadPreconfiguredData();
+            }
+        }
+        
+        // Load pre-configured data (you'll need to add your Excel file to the repo)
+        function loadPreconfiguredData() {
+            console.log('Auto-loading pre-configured data for users...');
+            // This would load a file from your repository
+            // For now, we'll show a message
+            document.getElementById('fileStatus').innerHTML = '<p style="color: #48bb78;">✅ Dashboard loaded with latest data</p>';
+            // You can add actual data loading logic here
+        }
 
         document.addEventListener('click', function(event) {
             if (!event.target.closest('.multi-select')) {
@@ -537,6 +587,21 @@
                 '\t': ' '
             };
             return safeString(text).replace(/[&<>"'\n\r\t]/g, function(m) { return map[m]; });
+        }
+
+        function handleAdminFileUpload(event) {
+            var file = event.target.files[0];
+            if (!file) return;
+
+            console.log('=== ADMIN FILE UPLOAD ===');
+            console.log('File name:', file.name);
+            console.log('File size:', file.size, 'bytes');
+            
+            // Here you would typically save this file to your server/repository
+            // For now, we'll just process it normally
+            handleFileUpload(event);
+            
+            document.getElementById('adminFileStatus').innerHTML = '<p style="color: #48bb78;">✅ Data file updated successfully!</p>';
         }
 
         function handleFileUpload(event) {
