@@ -516,12 +516,14 @@
         // Load pre-configured data from repository
         function loadPreconfiguredData() {
             console.log('Auto-loading pre-configured data for users...');
+            console.log('Checking embedded data availability:', typeof embeddedData, embeddedData ? embeddedData.length : 'undefined');
             
             document.getElementById('loadingSection').classList.remove('hidden');
             
             // Try loading JSON first (better for Vercel), then fall back to Excel, then embedded data
             fetch('data/revenue-data.json')
                 .then(response => {
+                    console.log('JSON fetch response status:', response.status);
                     if (!response.ok) {
                         throw new Error('JSON data file not found, trying Excel...');
                     }
@@ -547,6 +549,7 @@
                     // Fall back to Excel file
                     return fetch('data/revenue-data.xlsx')
                         .then(response => {
+                            console.log('Excel fetch response status:', response.status);
                             if (!response.ok) {
                                 throw new Error('Excel file not found, using embedded data...');
                             }
@@ -575,8 +578,10 @@
                     console.log('Excel loading failed, using embedded data:', error.message);
                     
                     // Final fallback: Use embedded data
-                    if (typeof embeddedData !== 'undefined' && embeddedData.length > 0) {
+                    if (typeof embeddedData !== 'undefined' && embeddedData && embeddedData.length > 0) {
                         console.log('=== EMBEDDED DATA LOADED ===');
+                        console.log('Embedded data type:', typeof embeddedData);
+                        console.log('Embedded data length:', embeddedData.length);
                         
                         originalData = embeddedData;
                         filteredData = originalData.slice();
@@ -590,6 +595,12 @@
                         document.getElementById('dashboardContent').classList.remove('hidden');
                     } else {
                         console.error('All data loading methods failed');
+                        console.error('Embedded data check:', {
+                            type: typeof embeddedData,
+                            isArray: Array.isArray(embeddedData),
+                            length: embeddedData ? embeddedData.length : 'undefined',
+                            firstItem: embeddedData ? embeddedData[0] : 'undefined'
+                        });
                         document.getElementById('loadingSection').classList.add('hidden');
                         // Show error in a more user-friendly way
                         document.getElementById('dashboardContent').classList.remove('hidden');
