@@ -1070,14 +1070,17 @@
                                         actionItemData[actionItem].weeks.push(yearWeek);
                                     }
                                     
-                                    // Debug logging for specific item
+                                    // Debug logging for specific items
                                     if (actionItem.includes('Existing E/M Code – Charge Billed Balance')) {
                                         console.log('Found "Existing E/M Code – Charge Billed Balance" in row', i, 'week', yearWeek, 'count now:', actionItemData[actionItem].count);
+                                    }
+                                    if (actionItem.includes('Existing E/M Code – Charge Balance')) {
+                                        console.log('Found "Existing E/M Code – Charge Balance" in row', i, 'week', yearWeek, 'count now:', actionItemData[actionItem].count);
                                     }
                                     
                                     // Debug: Log all action items to see what's being processed
                                     if (i < 5) { // Only log first 5 rows to avoid spam
-                                        console.log('Row', i, 'Item', j, ':', actionItem, 'Count:', actionItemData[actionItem].count);
+                                        console.log('Row', i, 'Item', j, 'Raw:', rawItem, 'Extracted:', actionItem, 'Count:', actionItemData[actionItem].count);
                                     }
                                 }
                             }
@@ -1090,6 +1093,14 @@
                 for (var k = 0; k < Math.min(5, sortedItems.length); k++) {
                     console.log('  ', sortedItems[k][0], ':', sortedItems[k][1].count);
                 }
+                
+                // Debug: Show all action items that contain "Existing E/M Code"
+                console.log('All "Existing E/M Code" items in', chartConfig.title + ':');
+                Object.entries(actionItemData).forEach(function(entry) {
+                    if (entry[0].includes('Existing E/M Code')) {
+                        console.log('  "', entry[0], '" :', entry[1].count);
+                    }
+                });
 
                 chartDataResults[chartConfig.title] = actionItemData;
                 createEnhancedBarChart(chartConfig.title, actionItemData, chartsContainer);
