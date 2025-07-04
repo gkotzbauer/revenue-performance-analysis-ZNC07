@@ -369,13 +369,7 @@
             <p>Comprehensive insights to drive higher revenue performance</p>
         </div>
 
-        <div class="upload-section" id="uploadSection">
-            <div class="file-input-wrapper">
-                <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls" />
-                <label for="fileInput" class="file-input-label">📊 Upload Excel File</label>
-            </div>
-            <div id="fileStatus"></div>
-        </div>
+
         
         <div class="upload-section" id="adminSection" style="display: none;">
             <h3>🔧 Admin Panel</h3>
@@ -492,7 +486,6 @@
         toggleAdminPanel();
         autoLoadData();
 
-        document.getElementById('fileInput').addEventListener('change', handleFileUpload);
         document.getElementById('adminFileInput').addEventListener('change', handleAdminFileUpload);
         
         // Check if user is admin (you can modify this logic)
@@ -506,10 +499,8 @@
         function toggleAdminPanel() {
             if (isAdmin()) {
                 document.getElementById('adminSection').style.display = 'block';
-                document.getElementById('uploadSection').style.display = 'none';
             } else {
                 document.getElementById('adminSection').style.display = 'none';
-                document.getElementById('uploadSection').style.display = 'block';
             }
         }
         
@@ -526,7 +517,6 @@
             console.log('Auto-loading pre-configured data for users...');
             
             document.getElementById('loadingSection').classList.remove('hidden');
-            document.getElementById('fileStatus').innerHTML = '<p style="color: #667eea;">Loading latest data...</p>';
             
             // Load the pre-configured Excel file from the repository
             fetch('data/revenue-data.xlsx')
@@ -553,13 +543,13 @@
                     initializeDashboard();
                     document.getElementById('loadingSection').classList.add('hidden');
                     document.getElementById('dashboardContent').classList.remove('hidden');
-                    
-                    document.getElementById('fileStatus').innerHTML = '<p style="color: #48bb78;">✅ Dashboard loaded with latest data</p>';
                 })
                 .catch(error => {
                     console.error('Error loading pre-configured data:', error);
                     document.getElementById('loadingSection').classList.add('hidden');
-                    document.getElementById('fileStatus').innerHTML = '<p style="color: #f56565;">❌ Error loading data: ' + error.message + '</p>';
+                    // Show error in a more user-friendly way
+                    document.getElementById('dashboardContent').classList.remove('hidden');
+                    document.getElementById('dashboardContent').innerHTML = '<div class="upload-section"><p style="color: #f56565;">❌ Error loading data: ' + error.message + '</p></div>';
                 });
         }
 
