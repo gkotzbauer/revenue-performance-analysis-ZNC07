@@ -39,58 +39,34 @@
           }
         ];
         
-        // Add more sample data entries for testing
-        embeddedData.push({
-          "Year": 2024,
-          "Week": 2,
-          "Visit Count": 498,
-          "Avg. Charge E/M Weight": 1.1987951807,
-          "Charge Amount": 98765.43,
-          "Fee Schedule Expected Amount": 78901.234,
-          "Charge Billed Balance": 25.123456789,
-          "Charge Balance": 25.123456789,
-          "Zero-Balance Collection Dollar Impact": 7.123456789,
-          "Payment per Visit": 75.123456789,
-          "NRV Zero Balance": 76.123456789,
-          "Zero Balance Collection Rate": 0.445678901,
-          "Collection Rate": 0.436789012,
-          "Labs per Visit": 1.345678901,
-          "Total Payments": 37456.78,
-          "Predicted Payments": 36543.210987654,
-          "Absolute Error": 913.569012346,
-          "% Error": 2.456789012,
-          "Performance Diagnostic": "Over Performed",
-          "What Went Well": "15-UNITED HEALTHCARE – Existing E/M Code Charge Billed Balance decreased from avg 22.57 to -60.00; 5-COMMERCIAL – New E/M Codes Zero-Balance Collection Dollar Impact decreased from avg 38.85 to -10.00",
-          "What Can Be Improved": "3-MEDICARE – Procedures & Surgical CPT Codes Charge Billed Balance increased from avg 7.54 to 95.00; 12-HUMANA – New E/M Codes Charge Billed Balance increased from avg -5.70 to 45.00",
-          "Aetna Analysis": "17-AETNA – Lab/Test CPT Codes Zero-Balance Collection Dollar Impact increased from avg 67.98 to 550.00; 17-AETNA – X-Ray CPT Codes Charge Billed Balance increased from avg 24.00 to 115.00",
-          "BCBS Analysis": "2-BCBS – New E/M Codes Zero-Balance Collection Dollar Impact increased from avg -3.12 to 650.00; 2-BCBS – Existing E/M Code Charge Billed Balance decreased from avg 10.00 to -180.00"
-        });
-        
-        embeddedData.push({
-          "Year": 2024,
-          "Week": 3,
-          "Visit Count": 523,
-          "Avg. Charge E/M Weight": 1.2567890123,
-          "Charge Amount": 105678.90,
-          "Fee Schedule Expected Amount": 82345.678,
-          "Charge Billed Balance": 28.345678901,
-          "Charge Balance": 28.345678901,
-          "Zero-Balance Collection Dollar Impact": 9.345678901,
-          "Payment per Visit": 78.345678901,
-          "NRV Zero Balance": 79.345678901,
-          "Zero Balance Collection Rate": 0.456789012,
-          "Collection Rate": 0.445678901,
-          "Labs per Visit": 1.456789012,
-          "Total Payments": 41234.56,
-          "Predicted Payments": 37890.123456789,
-          "Absolute Error": 3344.436543211,
-          "% Error": 8.823456789,
-          "Performance Diagnostic": "Over Performed",
-          "What Went Well": "15-UNITED HEALTHCARE – Existing E/M Code Charge Billed Balance decreased from avg 22.57 to -80.00; 5-COMMERCIAL – New E/M Codes Zero-Balance Collection Dollar Impact decreased from avg 38.85 to -15.00",
-          "What Can Be Improved": "3-MEDICARE – Procedures & Surgical CPT Codes Charge Billed Balance increased from avg 7.54 to 110.00; 12-HUMANA – New E/M Codes Charge Billed Balance increased from avg -5.70 to 60.00",
-          "Aetna Analysis": "17-AETNA – Lab/Test CPT Codes Zero-Balance Collection Dollar Impact increased from avg 67.98 to 680.00; 17-AETNA – X-Ray CPT Codes Charge Billed Balance increased from avg 24.00 to 135.00",
-          "BCBS Analysis": "2-BCBS – New E/M Codes Zero-Balance Collection Dollar Impact increased from avg -3.12 to 720.00; 2-BCBS – Existing E/M Code Charge Billed Balance decreased from avg 10.00 to -220.00"
-        });
+        // Add more sample data for better testing
+        for (var i = 2; i <= 10; i++) {
+            embeddedData.push({
+                "Year": 2024,
+                "Week": i,
+                "Visit Count": 500 + Math.floor(Math.random() * 50),
+                "Avg. Charge E/M Weight": 1.2 + Math.random() * 0.3,
+                "Charge Amount": 90000 + Math.random() * 20000,
+                "Fee Schedule Expected Amount": 70000 + Math.random() * 15000,
+                "Charge Billed Balance": 20 + Math.random() * 20,
+                "Charge Balance": 20 + Math.random() * 20,
+                "Zero-Balance Collection Dollar Impact": 5 + Math.random() * 10,
+                "Payment per Visit": 70 + Math.random() * 15,
+                "NRV Zero Balance": 70 + Math.random() * 15,
+                "Zero Balance Collection Rate": 0.4 + Math.random() * 0.1,
+                "Collection Rate": 0.4 + Math.random() * 0.1,
+                "Labs per Visit": 1.2 + Math.random() * 0.5,
+                "Total Payments": 35000 + Math.random() * 10000,
+                "Predicted Payments": 35000 + Math.random() * 10000,
+                "Absolute Error": Math.random() * 2000,
+                "% Error": Math.random() * 5,
+                "Performance Diagnostic": ["Over Performed", "Average Performance", "Under Performed"][Math.floor(Math.random() * 3)],
+                "What Went Well": "Sample data - What went well for week " + i,
+                "What Can Be Improved": "Sample data - What can be improved for week " + i,
+                "Aetna Analysis": "Sample Aetna analysis for week " + i,
+                "BCBS Analysis": "Sample BCBS analysis for week " + i
+            });
+        }
         
         console.log('Embedded data loaded successfully:', embeddedData.length, 'records');
     </script>
