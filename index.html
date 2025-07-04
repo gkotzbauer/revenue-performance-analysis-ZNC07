@@ -9,6 +9,7 @@
     <meta http-equiv="Expires" content="0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="embedded-data.js"></script>
     <style>
         * {
             margin: 0;
@@ -518,7 +519,7 @@
             
             document.getElementById('loadingSection').classList.remove('hidden');
             
-            // Try loading JSON first (better for Vercel), then fall back to Excel
+            // Try loading JSON first (better for Vercel), then fall back to Excel, then embedded data
             fetch('data/revenue-data.json')
                 .then(response => {
                     if (!response.ok) {
@@ -547,7 +548,7 @@
                     return fetch('data/revenue-data.xlsx')
                         .then(response => {
                             if (!response.ok) {
-                                throw new Error('Data file not found. Please contact administrator.');
+                                throw new Error('Excel file not found, using embedded data...');
                             }
                             return response.arrayBuffer();
                         })
@@ -571,11 +572,29 @@
                         });
                 })
                 .catch(error => {
-                    console.error('Error loading pre-configured data:', error);
-                    document.getElementById('loadingSection').classList.add('hidden');
-                    // Show error in a more user-friendly way
-                    document.getElementById('dashboardContent').classList.remove('hidden');
-                    document.getElementById('dashboardContent').innerHTML = '<div class="upload-section"><p style="color: #f56565;">❌ Error loading data: ' + error.message + '</p><p style="color: #667eea; margin-top: 10px;">Please try refreshing the page or contact the administrator.</p></div>';
+                    console.log('Excel loading failed, using embedded data:', error.message);
+                    
+                    // Final fallback: Use embedded data
+                    if (typeof embeddedData !== 'undefined' && embeddedData.length > 0) {
+                        console.log('=== EMBEDDED DATA LOADED ===');
+                        
+                        originalData = embeddedData;
+                        filteredData = originalData.slice();
+                        
+                        console.log('Total rows loaded:', embeddedData.length);
+                        console.log('Sample row:', embeddedData[0]);
+                        
+                        // Initialize dashboard with embedded data
+                        initializeDashboard();
+                        document.getElementById('loadingSection').classList.add('hidden');
+                        document.getElementById('dashboardContent').classList.remove('hidden');
+                    } else {
+                        console.error('All data loading methods failed');
+                        document.getElementById('loadingSection').classList.add('hidden');
+                        // Show error in a more user-friendly way
+                        document.getElementById('dashboardContent').classList.remove('hidden');
+                        document.getElementById('dashboardContent').innerHTML = '<div class="upload-section"><p style="color: #f56565;">❌ Error loading data: All data sources failed.</p><p style="color: #667eea; margin-top: 10px;">Please try refreshing the page or contact the administrator.</p></div>';
+                    }
                 });
         }
 
