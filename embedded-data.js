@@ -1,4 +1,4 @@
-const embeddedData = [
+var embeddedData = [
   {
     "Year": 2024,
     "Week": 1,

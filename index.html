@@ -479,9 +479,15 @@
         var chartDataResults = {};
         
         // Force refresh and version tracking
-        console.log('=== Revenue Dashboard v4.0 - Debug Mode ===');
+        console.log('=== Revenue Dashboard v4.1 - Debug Mode ===');
         console.log('Timestamp:', new Date().toISOString());
         console.log('Changes: Added detailed debugging for Existing E/M Code items');
+        
+        // Debug embedded data availability
+        console.log('=== EMBEDDED DATA DEBUG ===');
+        console.log('embeddedData type:', typeof embeddedData);
+        console.log('embeddedData length:', embeddedData ? embeddedData.length : 'undefined');
+        console.log('embeddedData first item:', embeddedData ? embeddedData[0] : 'undefined');
         
         // Initialize admin panel and auto-load data
         toggleAdminPanel();
