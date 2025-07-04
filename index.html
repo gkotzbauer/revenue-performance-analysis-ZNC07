@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Urgent Care Revenue Performance Dashboard - v2</title>
+    <title>Urgent Care Revenue Performance Dashboard - v3</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -471,8 +474,9 @@
         var chartDataResults = {};
         
         // Force refresh and version tracking
-        console.log('=== Revenue Dashboard v2.0 - Updated Counting Logic ===');
+        console.log('=== Revenue Dashboard v3.0 - Fixed Counting Logic ===');
         console.log('Timestamp:', new Date().toISOString());
+        console.log('Changes: Removed Set logic, count every occurrence, added debugging');
 
         document.getElementById('fileInput').addEventListener('change', handleFileUpload);
 
