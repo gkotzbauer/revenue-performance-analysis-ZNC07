@@ -521,13 +521,46 @@
             }
         }
         
-        // Load pre-configured data (you'll need to add your Excel file to the repo)
+        // Load pre-configured data from repository
         function loadPreconfiguredData() {
             console.log('Auto-loading pre-configured data for users...');
-            // This would load a file from your repository
-            // For now, we'll show a message
-            document.getElementById('fileStatus').innerHTML = '<p style="color: #48bb78;">✅ Dashboard loaded with latest data</p>';
-            // You can add actual data loading logic here
+            
+            document.getElementById('loadingSection').classList.remove('hidden');
+            document.getElementById('fileStatus').innerHTML = '<p style="color: #667eea;">Loading latest data...</p>';
+            
+            // Load the pre-configured Excel file from the repository
+            fetch('data/revenue-data.xlsx')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Data file not found. Please contact administrator.');
+                    }
+                    return response.arrayBuffer();
+                })
+                .then(data => {
+                    console.log('=== PRE-CONFIGURED DATA LOADED ===');
+                    
+                    var workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
+                    var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    var jsonData = XLSX.utils.sheet_to_json(firstSheet);
+                    
+                    originalData = jsonData;
+                    filteredData = originalData.slice();
+                    
+                    console.log('Total rows loaded:', jsonData.length);
+                    console.log('Sample row:', jsonData[0]);
+                    
+                    // Initialize dashboard with pre-loaded data
+                    initializeDashboard();
+                    document.getElementById('loadingSection').classList.add('hidden');
+                    document.getElementById('dashboardContent').classList.remove('hidden');
+                    
+                    document.getElementById('fileStatus').innerHTML = '<p style="color: #48bb78;">✅ Dashboard loaded with latest data</p>';
+                })
+                .catch(error => {
+                    console.error('Error loading pre-configured data:', error);
+                    document.getElementById('loadingSection').classList.add('hidden');
+                    document.getElementById('fileStatus').innerHTML = '<p style="color: #f56565;">❌ Error loading data: ' + error.message + '</p>';
+                });
         }
 
         document.addEventListener('click', function(event) {
@@ -597,11 +630,15 @@
             console.log('File name:', file.name);
             console.log('File size:', file.size, 'bytes');
             
-            // Here you would typically save this file to your server/repository
-            // For now, we'll just process it normally
+            // Process the file for immediate use
             handleFileUpload(event);
             
-            document.getElementById('adminFileStatus').innerHTML = '<p style="color: #48bb78;">✅ Data file updated successfully!</p>';
+            // Note: In a real implementation, you would upload this to your server
+            // For now, we'll show instructions for manual file placement
+            document.getElementById('adminFileStatus').innerHTML = 
+                '<p style="color: #48bb78;">✅ Data processed successfully!</p>' +
+                '<p style="color: #667eea; font-size: 0.9rem; margin-top: 10px;">' +
+                'To make this data available to all users, save the file as "revenue-data.xlsx" in the "data" folder of this repository.</p>';
         }
 
         function handleFileUpload(event) {
