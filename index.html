@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Urgent Care Revenue Performance Dashboard</title>
+    <title>Urgent Care Revenue Performance Dashboard - v2</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -469,6 +469,10 @@
         var performanceDistChart;
         var missedRevenueChart;
         var chartDataResults = {};
+        
+        // Force refresh and version tracking
+        console.log('=== Revenue Dashboard v2.0 - Updated Counting Logic ===');
+        console.log('Timestamp:', new Date().toISOString());
 
         document.getElementById('fileInput').addEventListener('change', handleFileUpload);
 
@@ -1023,6 +1027,9 @@
             chartsContainer.innerHTML = '';
             chartDataResults = {};
 
+            console.log('=== DEBUG: Starting createAnalysisCharts ===');
+            console.log('Total filtered data rows:', filteredData.length);
+
             var chartConfigs = [
                 { title: 'What Can Be Improved', source: 'What Can Be Improved', filter: 'all' },
                 { title: 'What Went Well', source: 'What Went Well', filter: 'all' }
@@ -1031,6 +1038,8 @@
             for (var config = 0; config < chartConfigs.length; config++) {
                 var chartConfig = chartConfigs[config];
                 var actionItemData = {};
+                
+                console.log('=== Processing:', chartConfig.title, '===');
                 
                 for (var i = 0; i < filteredData.length; i++) {
                     var row = filteredData[i];
@@ -1056,10 +1065,26 @@
                                     if (actionItemData[actionItem].weeks.indexOf(yearWeek) === -1) {
                                         actionItemData[actionItem].weeks.push(yearWeek);
                                     }
+                                    
+                                    // Debug logging for specific item
+                                    if (actionItem.includes('Existing E/M Code – Charge Billed Balance')) {
+                                        console.log('Found "Existing E/M Code – Charge Billed Balance" in row', i, 'week', yearWeek, 'count now:', actionItemData[actionItem].count);
+                                    }
+                                    
+                                    // Debug: Log all action items to see what's being processed
+                                    if (i < 5) { // Only log first 5 rows to avoid spam
+                                        console.log('Row', i, 'Item', j, ':', actionItem, 'Count:', actionItemData[actionItem].count);
+                                    }
                                 }
                             }
                         }
                     }
+                }
+
+                console.log('Final counts for', chartConfig.title + ':');
+                var sortedItems = Object.entries(actionItemData).sort((a, b) => b[1].count - a[1].count);
+                for (var k = 0; k < Math.min(5, sortedItems.length); k++) {
+                    console.log('  ', sortedItems[k][0], ':', sortedItems[k][1].count);
                 }
 
                 chartDataResults[chartConfig.title] = actionItemData;
@@ -1070,6 +1095,8 @@
         }
 
         function updateRecommendationsFromChartData() {
+            console.log('=== DEBUG: updateRecommendationsFromChartData ===');
+            
             var whatCanBeImprovedData = chartDataResults['What Can Be Improved'] || {};
             var improvedSorted = Object.entries(whatCanBeImprovedData)
                 .map(function(entry) {
@@ -1081,6 +1108,8 @@
                 .sort(function(a, b) { return b.count - a.count; })
                 .slice(0, 3);
 
+            console.log('Top 3 "What Can Be Improved":', improvedSorted);
+
             var whatWentWellData = chartDataResults['What Went Well'] || {};
             var wentWellSorted = Object.entries(whatWentWellData)
                 .map(function(entry) {
@@ -1091,6 +1120,8 @@
                 })
                 .sort(function(a, b) { return b.count - a.count; })
                 .slice(0, 3);
+
+            console.log('Top 3 "What Went Well":', wentWellSorted);
 
             var immediateActions = [];
             for (var i = 0; i < improvedSorted.length; i++) {
