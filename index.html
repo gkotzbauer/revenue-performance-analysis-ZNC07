@@ -1045,7 +1045,7 @@
                             if (rawItem) {
                                 var actionItem = extractActionItemText(rawItem);
                                 
-                                if (actionItem && !actionItem.toUpperCase().includes('SELF PAY')) {
+                                if (actionItem) {
                                     if (!actionItemData[actionItem]) {
                                         actionItemData[actionItem] = {
                                             count: 0,
