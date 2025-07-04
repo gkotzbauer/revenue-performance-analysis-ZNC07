@@ -9,7 +9,91 @@
     <meta http-equiv="Expires" content="0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="embedded-data.js"></script>
+    <script>
+        // Embedded data - guaranteed to be available
+        var embeddedData = [
+          {
+            "Year": 2024,
+            "Week": 1,
+            "Visit Count": 521,
+            "Avg. Charge E/M Weight": 1.2252659273,
+            "Charge Amount": 104157.77,
+            "Fee Schedule Expected Amount": 81011.137,
+            "Charge Billed Balance": 27.1803278689,
+            "Charge Balance": 27.1803278689,
+            "Zero-Balance Collection Dollar Impact": 8.2213128151,
+            "Payment per Visit": 76.9441328682,
+            "NRV Zero Balance": 78.4363195007,
+            "Zero Balance Collection Rate": 0.4473635675,
+            "Collection Rate": 0.4385670022,
+            "Labs per Visit": 1.4220969822,
+            "Total Payments": 40112.68,
+            "Predicted Payments": 37163.399604624,
+            "Absolute Error": 2949.280395376,
+            "% Error": 7.9398504956,
+            "Performance Diagnostic": "Over Performed",
+            "What Went Well": "15-UNITED HEALTHCARE – Existing E/M Code Charge Billed Balance decreased from avg 22.57 to -70.00; 15-UNITED HEALTHCARE – Existing E/M Code Charge Balance decreased from avg 22.57 to -70.00; 15-UNITED HEALTHCARE – Existing E/M Code Zero-Balance Collection Dollar Impact decreased from avg -13.83 to -44.48; 5-COMMERCIAL – New E/M Codes Zero-Balance Collection Dollar Impact decreased from avg 38.85 to -11.64; 5-COMMERCIAL – New E/M Codes Charge Billed Balance decreased from avg 117.91 to -11.64; 5-COMMERCIAL – New E/M Codes Charge Balance decreased from avg 117.91 to -11.64",
+            "What Can Be Improved": "3-MEDICARE – Procedures & Surgical CPT Codes Charge Billed Balance increased from avg 7.54 to 104.00; 3-MEDICARE – Procedures & Surgical CPT Codes Charge Balance increased from avg 7.54 to 104.00; 12-HUMANA – New E/M Codes Charge Billed Balance increased from avg -5.70 to 55.00; 12-HUMANA – New E/M Codes Charge Balance increased from avg -5.70 to 55.00; 4-MEDICAID – X-Ray CPT Codes Charge Billed Balance increased from avg 11.85 to 128.00; 4-MEDICAID – X-Ray CPT Codes Charge Balance increased from avg 11.85 to 128.00",
+            "Aetna Analysis": "17-AETNA – Lab/Test CPT Codes Zero-Balance Collection Dollar Impact increased from avg 67.98 to 612.73; 17-AETNA – Lab/Test CPT Codes Charge Billed Balance increased from avg 115.11 to 1011.00; 17-AETNA – Lab/Test CPT Codes Charge Balance increased from avg 116.92 to 1011.00; 17-AETNA – X-Ray CPT Codes Charge Billed Balance increased from avg 24.00 to 128.00; 17-AETNA – X-Ray CPT Codes Charge Balance increased from avg 24.00 to 128.00; 17-AETNA – X-Ray CPT Codes Zero-Balance Collection Dollar Impact increased from avg 12.02 to 46.35",
+            "BCBS Analysis": "2-BCBS – New E/M Codes Zero-Balance Collection Dollar Impact increased from avg -3.12 to 714.85; 2-BCBS – X-Ray CPT Codes Zero-Balance Collection Dollar Impact increased from avg 1.27 to 32.81; 2-BCBS – Existing E/M Code Charge Billed Balance decreased from avg 10.00 to -204.90; 2-BCBS – Existing E/M Code Charge Balance decreased from avg 10.00 to -204.90; 2-BCBS – New E/M Codes Charge Billed Balance increased from avg 66.09 to 1243.38; 2-BCBS – New E/M Codes Charge Balance increased from avg 70.98 to 1243.38"
+          }
+        ];
+        
+        // Add more sample data entries for testing
+        embeddedData.push({
+          "Year": 2024,
+          "Week": 2,
+          "Visit Count": 498,
+          "Avg. Charge E/M Weight": 1.1987951807,
+          "Charge Amount": 98765.43,
+          "Fee Schedule Expected Amount": 78901.234,
+          "Charge Billed Balance": 25.123456789,
+          "Charge Balance": 25.123456789,
+          "Zero-Balance Collection Dollar Impact": 7.123456789,
+          "Payment per Visit": 75.123456789,
+          "NRV Zero Balance": 76.123456789,
+          "Zero Balance Collection Rate": 0.445678901,
+          "Collection Rate": 0.436789012,
+          "Labs per Visit": 1.345678901,
+          "Total Payments": 37456.78,
+          "Predicted Payments": 36543.210987654,
+          "Absolute Error": 913.569012346,
+          "% Error": 2.456789012,
+          "Performance Diagnostic": "Over Performed",
+          "What Went Well": "15-UNITED HEALTHCARE – Existing E/M Code Charge Billed Balance decreased from avg 22.57 to -60.00; 5-COMMERCIAL – New E/M Codes Zero-Balance Collection Dollar Impact decreased from avg 38.85 to -10.00",
+          "What Can Be Improved": "3-MEDICARE – Procedures & Surgical CPT Codes Charge Billed Balance increased from avg 7.54 to 95.00; 12-HUMANA – New E/M Codes Charge Billed Balance increased from avg -5.70 to 45.00",
+          "Aetna Analysis": "17-AETNA – Lab/Test CPT Codes Zero-Balance Collection Dollar Impact increased from avg 67.98 to 550.00; 17-AETNA – X-Ray CPT Codes Charge Billed Balance increased from avg 24.00 to 115.00",
+          "BCBS Analysis": "2-BCBS – New E/M Codes Zero-Balance Collection Dollar Impact increased from avg -3.12 to 650.00; 2-BCBS – Existing E/M Code Charge Billed Balance decreased from avg 10.00 to -180.00"
+        });
+        
+        embeddedData.push({
+          "Year": 2024,
+          "Week": 3,
+          "Visit Count": 523,
+          "Avg. Charge E/M Weight": 1.2567890123,
+          "Charge Amount": 105678.90,
+          "Fee Schedule Expected Amount": 82345.678,
+          "Charge Billed Balance": 28.345678901,
+          "Charge Balance": 28.345678901,
+          "Zero-Balance Collection Dollar Impact": 9.345678901,
+          "Payment per Visit": 78.345678901,
+          "NRV Zero Balance": 79.345678901,
+          "Zero Balance Collection Rate": 0.456789012,
+          "Collection Rate": 0.445678901,
+          "Labs per Visit": 1.456789012,
+          "Total Payments": 41234.56,
+          "Predicted Payments": 37890.123456789,
+          "Absolute Error": 3344.436543211,
+          "% Error": 8.823456789,
+          "Performance Diagnostic": "Over Performed",
+          "What Went Well": "15-UNITED HEALTHCARE – Existing E/M Code Charge Billed Balance decreased from avg 22.57 to -80.00; 5-COMMERCIAL – New E/M Codes Zero-Balance Collection Dollar Impact decreased from avg 38.85 to -15.00",
+          "What Can Be Improved": "3-MEDICARE – Procedures & Surgical CPT Codes Charge Billed Balance increased from avg 7.54 to 110.00; 12-HUMANA – New E/M Codes Charge Billed Balance increased from avg -5.70 to 60.00",
+          "Aetna Analysis": "17-AETNA – Lab/Test CPT Codes Zero-Balance Collection Dollar Impact increased from avg 67.98 to 680.00; 17-AETNA – X-Ray CPT Codes Charge Billed Balance increased from avg 24.00 to 135.00",
+          "BCBS Analysis": "2-BCBS – New E/M Codes Zero-Balance Collection Dollar Impact increased from avg -3.12 to 720.00; 2-BCBS – Existing E/M Code Charge Billed Balance decreased from avg 10.00 to -220.00"
+        });
+        
+        console.log('Embedded data loaded successfully:', embeddedData.length, 'records');
+    </script>
     <style>
         * {
             margin: 0;
