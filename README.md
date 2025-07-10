@@ -1,106 +1,125 @@
-# Urgent Care Revenue Performance Dashboard
+# Revenue Performance Analysis Dashboard
 
-A comprehensive web-based dashboard for analyzing urgent care revenue performance data with actionable insights and visualizations.
+A comprehensive dashboard for analyzing urgent care revenue performance with actionable insights and recommendations.
 
 ## Features
 
-- 📊 **Interactive Charts**: Performance distribution, revenue trends, and improvement analysis
-- 🎯 **Actionable Insights**: Immediate actions and "Keep It Up" recommendations
-- 📈 **Revenue Analysis**: Missed/gained revenue tracking and performance diagnostics
-- 🔍 **Advanced Filtering**: Filter by year/week and performance diagnostics
-- 📤 **Export Functionality**: Download filtered results as Excel files
-- 👥 **User Management**: Admin panel for data updates, regular user view
+- 📊 **Performance Distribution Analysis** - Visual breakdown of over/under performing weeks
+- 💰 **Revenue Opportunity Tracking** - Identify missed revenue and gains
+- 🎯 **Actionable Recommendations** - AI-powered suggestions for improvement
+- 📈 **Trend Analysis** - 6-month revenue performance tracking
+- 📋 **Detailed Weekly Reports** - Comprehensive performance breakdowns
+- 📤 **Excel Export** - Download filtered results for further analysis
+- 🔧 **Admin Panel** - Upload new data files (admin access required)
 
-## Setup Instructions
+## Quick Start
 
-### For Regular Users
-1. Simply open `index.html` in your web browser
-2. The dashboard will automatically load the latest data
-3. Use the filters to analyze specific time periods or performance categories
-4. Export results as needed
+### Option 1: Simple Test Server (Recommended for Testing)
 
-### For Administrators
-1. Add `?admin=true` to the URL or set `localStorage.setItem('isAdmin', 'true')` in browser console
-2. Upload new data files through the admin panel
-3. To make data available to all users:
-   - Save your Excel file as `revenue-data.xlsx`
-   - Place it in the `data/` folder of this repository
-   - Commit and push the changes
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-### Data File Requirements
-Your Excel file should contain these columns:
-- `Year` - Year of the data
-- `Week` - Week number
-- `Total Payments` - Actual revenue received
-- `Predicted Payments` - Expected revenue
-- `Performance Diagnostic` - Over/Average/Under Performed
-- `Payment per Visit` - Revenue per patient visit
-- `Collection Rate` - Percentage of charges collected
-- `Visit Count` - Number of patient visits
-- `Charge Amount` - Total charges billed
-- `What Went Well` - Semicolon-separated list of positive factors
-- `What Can Be Improved` - Semicolon-separated list of improvement areas
-- `Aetna Analysis` - Insurance-specific analysis
-- `BCBS Analysis` - Insurance-specific analysis
+2. **Start the test server:**
+   ```bash
+   npm run test-server
+   ```
 
-## Usage
+3. **Open your browser:**
+   - Dashboard: http://localhost:3000
+   - Admin Panel: http://localhost:3000?admin=true
 
-### Viewing the Dashboard
-1. Open `index.html` in a web browser
-2. The dashboard will automatically load with the latest data
-3. Use the filters at the top to narrow down your analysis
-4. Scroll through the various charts and insights
+### Option 2: Development Mode (Vite)
 
-### Admin Functions
-- **Upload New Data**: Use the admin panel to upload updated Excel files
-- **Update Repository**: Save files to the `data/` folder to make them available to all users
-- **Version Control**: Commit changes to track data updates
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-### Exporting Results
-1. Apply your desired filters
-2. Click the "Export to Excel" button at the bottom
-3. The filtered data will be downloaded as an Excel file
+2. **Start development server:**
+   ```bash
+   npm run dev
+   ```
 
-## Technical Details
+3. **Open your browser:**
+   - Dashboard: http://localhost:5173
+   - Admin Panel: http://localhost:5173?admin=true
 
-- **Frontend**: Pure HTML/CSS/JavaScript with Chart.js for visualizations
-- **Data Processing**: Uses SheetJS library for Excel file parsing
-- **No Backend Required**: Runs entirely in the browser
-- **Responsive Design**: Works on desktop and mobile devices
+## Data Sources
 
-## File Structure
-```
-Revenue_Performance_Analysis/
-├── index.html              # Main dashboard file
-├── data/                   # Data files directory
-│   └── revenue-data.xlsx   # Pre-loaded data file
-├── README.md              # This file
-└── .gitignore             # Git ignore file
-```
+The dashboard automatically loads data from multiple sources in this order:
+
+1. **Excel File** (`data/revenue-data.xlsx`) - Primary data source for updates
+2. **JSON File** (`data/revenue-data.json`) - Fallback data source  
+3. **Embedded Data** - Built-in sample data for testing
+
+## Admin Features
+
+To access admin features, add `?admin=true` to the URL or set `localStorage.setItem('isAdmin', 'true')` in browser console.
+
+Admin features include:
+- Upload new data files
+- Update dashboard data for all users
+- Access to advanced configuration options
+
+## Data Format
+
+The dashboard expects Excel files with the following columns:
+
+- **Year** - Year of the data
+- **Week** - Week number
+- **Visit Count** - Number of patient visits
+- **Total Payments** - Actual revenue collected
+- **Predicted Payments** - Expected revenue
+- **Performance Diagnostic** - Over/Average/Under Performed
+- **What Went Well** - Positive performance factors
+- **What Can Be Improved** - Areas for improvement
+- **Aetna Analysis** - Aetna-specific insights
+- **BCBS Analysis** - BCBS-specific insights
+
+## Export Features
+
+- **Excel Export** - Download filtered results as Excel file
+- **Summary Sheets** - Performance metrics and missed revenue calculations
+- **Detailed Analysis** - Complete dataset with all insights
+
+## Browser Compatibility
+
+- Chrome 80+
+- Firefox 75+
+- Safari 13+
+- Edge 80+
 
 ## Troubleshooting
 
-### Data Not Loading
-- Ensure `revenue-data.xlsx` exists in the `data/` folder
-- Check that the file format matches the required column structure
-- Verify the file is accessible via web server
+### Server Issues
+- Ensure port 3000 is available
+- Check that all dependencies are installed
+- Verify Node.js version 14+ is installed
 
-### Admin Panel Not Showing
-- Add `?admin=true` to the URL
-- Or run `localStorage.setItem('isAdmin', 'true')` in browser console
+### Data Loading Issues
+- Check browser console for error messages
+- Verify data file format matches expected structure
+- Ensure data files are in the correct location
 
-### Export Issues
-- Ensure you have data loaded before attempting export
-- Check browser console for any JavaScript errors
-- Try refreshing the page if issues persist
+### Admin Access Issues
+- Add `?admin=true` to URL
+- Clear browser cache and cookies
+- Check browser console for JavaScript errors
 
 ## Version History
 
-- **v4.0**: Added detailed debugging for action item counting
-- **v3.0**: Implemented admin panel and user management
-- **v2.0**: Enhanced filtering and export functionality
-- **v1.0**: Initial dashboard with basic charts and analysis
+- **v4.1** - Enhanced debugging, improved data loading, better error handling
+- **v4.0** - Added admin panel, Excel export, performance improvements
+- **v3.0** - Added embedded data, improved UI/UX
+- **v2.0** - Added filtering and chart enhancements
+- **v1.0** - Initial release with basic dashboard functionality
 
 ## Support
 
-For issues or questions, please check the browser console for error messages and ensure all required files are present in the correct locations.
+For issues or questions:
+1. Check the browser console for error messages
+2. Verify data file format and location
+3. Ensure all dependencies are properly installed
+4. Try refreshing the page or clearing browser cache
