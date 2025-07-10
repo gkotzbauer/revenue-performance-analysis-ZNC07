@@ -770,7 +770,7 @@
                         });
                 })
                 .catch(error => {
-                    console.log('Excel loading failed, using embedded data:', error.message);
+                    console.log('JSON loading failed, using embedded data:', error.message);
                     
                     // Final fallback: Use embedded data
                     if (typeof embeddedData !== 'undefined' && embeddedData && embeddedData.length > 0) {
@@ -799,7 +799,7 @@
                         document.getElementById('loadingSection').classList.add('hidden');
                         // Show error in a more user-friendly way
                         document.getElementById('dashboardContent').classList.remove('hidden');
-                        document.getElementById('dashboardContent').innerHTML = '<div class="upload-section"><p style="color: #f56565;">❌ Error loading data: All data sources failed.</p><p style="color: #667eea; margin-top: 10px;">Please try refreshing the page or contact the administrator.</p></div>';
+                        document.getElementById('dashboardContent').innerHTML = '<div class="upload-section"><p style="color: #f56565;">❌ Error loading data: All data sources failed.</p><p style="color: #667eea; margin-top: 10px;">Please try refreshing the page or contact the administrator.</p><p style="color: #718096; font-size: 0.9rem; margin-top: 10px;">Debug info: ' + escapeHtml(error.message) + '</p></div>';
                     }
                 });
         }
