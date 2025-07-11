@@ -606,7 +606,7 @@
                     <canvas id="performanceDistributionChart" width="400" height="300"></canvas>
                 </div>
                 <div class="summary-card">
-                    <h2>💰 Missed / Gained Revenue by Week for Over & Under Performing Weeks Only</h2>
+                    <h2>💰 Missed / Gained Revenue by Week (for Over & Under Performing Weeks Only)</h2>
                     <canvas id="missedRevenueChart" width="400" height="300"></canvas>
                 </div>
             </div>
@@ -1173,18 +1173,31 @@
                         }
                     });
                 } else {
+                    // Calculate sum of all values
+                    var totalSum = revenueOpportunityData.reduce(function(sum, d) { return sum + d.difference; }, 0);
+                    
+                    // Add sum to labels and data
+                    var chartLabels = revenueOpportunityData.map(function(d) { return d.week; });
+                    chartLabels.push('SUM');
+                    
+                    var chartData = revenueOpportunityData.map(function(d) { return d.difference; });
+                    chartData.push(totalSum);
+                    
+                    var chartColors = revenueOpportunityData.map(function(d) {
+                        if (d.performance === 'Over Performed') return '#48bb78';
+                        if (d.performance === 'Under Performed') return '#f56565';
+                        return '#718096';
+                    });
+                    chartColors.push(totalSum >= 0 ? '#48bb78' : '#f56565');
+                    
                     missedRevenueChart = new Chart(ctx2.getContext('2d'), {
                         type: 'bar',
                         data: {
-                            labels: revenueOpportunityData.map(function(d) { return d.week; }),
+                            labels: chartLabels,
                             datasets: [{
                                 label: 'Revenue Impact',
-                                data: revenueOpportunityData.map(function(d) { return d.difference; }),
-                                backgroundColor: revenueOpportunityData.map(function(d) {
-                                    if (d.performance === 'Over Performed') return '#48bb78';
-                                    if (d.performance === 'Under Performed') return '#f56565';
-                                    return '#718096';
-                                }),
+                                data: chartData,
+                                backgroundColor: chartColors,
                                 borderRadius: 8,
                                 borderSkipped: false,
                             }]
@@ -1199,6 +1212,18 @@
                                     callbacks: {
                                         label: function(context) {
                                             var index = context.dataIndex;
+                                            
+                                            // Handle SUM column
+                                            if (index === revenueOpportunityData.length) {
+                                                var totalSum = revenueOpportunityData.reduce(function(sum, d) { return sum + d.difference; }, 0);
+                                                var absValue = Math.round(Math.abs(totalSum));
+                                                if (totalSum >= 0) {
+                                                    return 'Total Revenue Gain: $' + absValue.toLocaleString();
+                                                } else {
+                                                    return 'Total Revenue Opportunity: $' + absValue.toLocaleString();
+                                                }
+                                            }
+                                            
                                             var dataPoint = revenueOpportunityData[index];
                                             var absValue = Math.round(dataPoint.absoluteDifference);
                                             
