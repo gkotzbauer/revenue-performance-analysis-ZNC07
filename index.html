@@ -716,7 +716,8 @@
             document.getElementById('loadingSection').classList.remove('hidden');
             
             // Try loading Excel first (primary source for updates), then fall back to JSON, then embedded data
-            fetch('data/revenue-data.xlsx')
+            // Add cache-busting parameter to force reload
+            fetch('data/revenue-data.xlsx?v=' + Date.now())
                 .then(response => {
                     console.log('Excel fetch response status:', response.status);
                     if (!response.ok) {
@@ -746,7 +747,7 @@
                     console.log('Excel loading failed, trying JSON:', error.message);
                     
                     // Fall back to JSON file
-                    return fetch('data/revenue-data.json')
+                    return fetch('data/revenue-data.json?v=' + Date.now())
                         .then(response => {
                             console.log('JSON fetch response status:', response.status);
                             if (!response.ok) {
