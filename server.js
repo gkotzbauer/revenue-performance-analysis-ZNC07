@@ -38,10 +38,7 @@ app.get('/health', (req, res) => {
     res.json({ 
         status: 'OK', 
         timestamp: new Date().toISOString(),
-        dataFiles: {
-            primary: '/data/revenue-data.xlsx',
-            fallback: '/data/revenue-data.json'
-        }
+        dataFile: '/data/revenue-data.xlsx'
     });
 });
 
@@ -49,9 +46,8 @@ app.listen(PORT, () => {
     console.log(`🚀 Server running at http://localhost:${PORT}`);
     console.log(`📊 Dashboard available at http://localhost:${PORT}`);
     console.log(`🔧 Admin panel available at http://localhost:${PORT}?admin=true`);
-    console.log(`📁 Data files available at:`);
-    console.log(`   - http://localhost:${PORT}/data/revenue-data.xlsx (primary)`);
-    console.log(`   - http://localhost:${PORT}/data/revenue-data.json (fallback)`);
+    console.log(`📁 Data file available at:`);
+    console.log(`   - http://localhost:${PORT}/data/revenue-data.xlsx`);
     console.log(`💡 Press Ctrl+C to stop the server`);
 });
 
