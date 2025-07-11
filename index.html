@@ -727,6 +727,7 @@
                 })
                 .then(data => {
                     console.log('=== PRE-CONFIGURED EXCEL DATA LOADED ===');
+                    console.log('Excel file size:', data.byteLength, 'bytes');
                     
                     var workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
                     var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -737,6 +738,8 @@
                     
                     console.log('Total rows loaded:', jsonData.length);
                     console.log('Sample row:', jsonData[0]);
+                    console.log('First row Year:', jsonData[0] ? jsonData[0].Year : 'undefined');
+                    console.log('Last row Year:', jsonData[jsonData.length-1] ? jsonData[jsonData.length-1].Year : 'undefined');
                     
                     // Initialize dashboard with pre-loaded data
                     initializeDashboard();
