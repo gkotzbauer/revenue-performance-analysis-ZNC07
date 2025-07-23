@@ -1153,6 +1153,12 @@
                         return '#718096';
                     });
 
+                    // Add the Sum bar
+                    var sumValue = chartData.reduce(function(sum, v) { return sum + v; }, 0);
+                    chartLabels.push('Sum');
+                    chartData.push(sumValue);
+                    chartColors.push(sumValue >= 0 ? '#48bb78' : '#f56565');
+
                     missedRevenueChart = new Chart(ctx2.getContext('2d'), {
                         type: 'bar',
                         data: {
@@ -1175,6 +1181,9 @@
                                     callbacks: {
                                         label: function(context) {
                                             var value = context.raw;
+                                            if (context.label === 'Sum') {
+                                                return 'Sum: $' + Math.abs(value).toLocaleString();
+                                            }
                                             return '$' + Math.abs(value).toLocaleString();
                                         }
                                     }
