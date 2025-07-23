@@ -1090,18 +1090,13 @@
             for (var i = 0; i < filteredData.length; i++) {
                 var row = filteredData[i];
                 var performance = safeString(row['Performance Diagnostic']);
-                
                 if (performance === 'Over Performed' || performance === 'Under Performed') {
-                    var actualRevenue = safeNumber(row['Total Payments']);
-                    var predictedRevenue = safeNumber(row['Predicted Payments']);
-                    var revenueDifference = actualRevenue - predictedRevenue;
-                    
+                    var absError = Math.round(safeNumber(row['Absolute Error']));
+                    var value = (performance === 'Over Performed') ? absError : -absError;
                     revenueOpportunityData.push({
                         week: safeString(row.Year) + '-' + safeString(row.Week),
-                        difference: revenueDifference,
-                        absoluteDifference: Math.abs(revenueDifference),
-                        performance: performance,
-                        isMissed: predictedRevenue > actualRevenue
+                        value: value,
+                        performance: performance
                     });
                 }
             }
@@ -1150,24 +1145,20 @@
                         }
                     });
                 } else {
-                    // Calculate sum of all values
-                    var totalSum = revenueOpportunityData.reduce(function(sum, d) { return sum + d.difference; }, 0);
-                    
-                    // Add sum to labels and data
                     var chartLabels = revenueOpportunityData.map(function(d) { return d.week; });
-                    var chartData = revenueOpportunityData.map(function(d) { return d.difference; });
+                    var chartData = revenueOpportunityData.map(function(d) { return d.value; });
                     var chartColors = revenueOpportunityData.map(function(d) {
                         if (d.performance === 'Over Performed') return '#48bb78';
                         if (d.performance === 'Under Performed') return '#f56565';
                         return '#718096';
                     });
-                    
+
                     missedRevenueChart = new Chart(ctx2.getContext('2d'), {
                         type: 'bar',
                         data: {
                             labels: chartLabels,
                             datasets: [{
-                                label: 'Revenue Impact',
+                                label: 'Absolute Error',
                                 data: chartData,
                                 backgroundColor: chartColors,
                                 borderRadius: 8,
@@ -1183,26 +1174,20 @@
                                 tooltip: {
                                     callbacks: {
                                         label: function(context) {
-                                            var index = context.dataIndex;
-                                            var dataPoint = revenueOpportunityData[index];
-                                            var absValue = Math.round(dataPoint.absoluteDifference);
-                                            if (dataPoint.isMissed) {
-                                                return 'Revenue Opportunity: $' + absValue.toLocaleString();
-                                            } else if (dataPoint.difference > 0) {
-                                                return 'Revenue Gain: $' + absValue.toLocaleString();
-                                            } else {
-                                                return 'No Revenue Impact';
-                                            }
+                                            var value = context.raw;
+                                            return '$' + Math.abs(value).toLocaleString();
                                         }
                                     }
                                 }
                             },
                             scales: {
                                 y: {
+                                    beginAtZero: true,
                                     ticks: {
                                         callback: function(value) {
-                                            var sign = value >= 0 ? '+' : '-';
-                                            return sign + '$' + Math.round(Math.abs(value)).toLocaleString();
+                                            if (value === 0) return '$0';
+                                            var sign = value > 0 ? '' : '-';
+                                            return sign + '$' + Math.abs(value).toLocaleString();
                                         }
                                     }
                                 },
