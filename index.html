@@ -1155,17 +1155,12 @@
                     
                     // Add sum to labels and data
                     var chartLabels = revenueOpportunityData.map(function(d) { return d.week; });
-                    chartLabels.push('SUM');
-                    
                     var chartData = revenueOpportunityData.map(function(d) { return d.difference; });
-                    chartData.push(totalSum);
-                    
                     var chartColors = revenueOpportunityData.map(function(d) {
                         if (d.performance === 'Over Performed') return '#48bb78';
                         if (d.performance === 'Under Performed') return '#f56565';
                         return '#718096';
                     });
-                    chartColors.push(totalSum >= 0 ? '#48bb78' : '#f56565');
                     
                     missedRevenueChart = new Chart(ctx2.getContext('2d'), {
                         type: 'bar',
@@ -1189,21 +1184,8 @@
                                     callbacks: {
                                         label: function(context) {
                                             var index = context.dataIndex;
-                                            
-                                            // Handle SUM column
-                                            if (index === revenueOpportunityData.length) {
-                                                var totalSum = revenueOpportunityData.reduce(function(sum, d) { return sum + d.difference; }, 0);
-                                                var absValue = Math.round(Math.abs(totalSum));
-                                                if (totalSum >= 0) {
-                                                    return 'Total Revenue Gain: $' + absValue.toLocaleString();
-                                                } else {
-                                                    return 'Total Revenue Opportunity: $' + absValue.toLocaleString();
-                                                }
-                                            }
-                                            
                                             var dataPoint = revenueOpportunityData[index];
                                             var absValue = Math.round(dataPoint.absoluteDifference);
-                                            
                                             if (dataPoint.isMissed) {
                                                 return 'Revenue Opportunity: $' + absValue.toLocaleString();
                                             } else if (dataPoint.difference > 0) {
@@ -1253,7 +1235,7 @@
                     labels: recentData.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); }),
                     datasets: [{
                         label: 'Actual Revenue',
-                        data: recentData.map(function(row) { return Math.round(safeNumber(row['Total Payments'])); }),
+                        data: recentData.map(function(row) { return Math.round(safeNumber(row['Payment Amount*'])); }),
                         borderColor: '#667eea',
                         backgroundColor: 'rgba(102, 126, 234, 0.1)',
                         borderWidth: 3,
@@ -1301,7 +1283,7 @@
             for (var i = 0; i < last6Weeks.length; i++) {
                 var row = last6Weeks[i];
                 var yearWeek = safeString(row.Year) + '-' + safeString(row.Week);
-                var actualRevenue = safeNumber(row['Total Payments']);
+                var actualRevenue = safeNumber(row['Payment Amount*']);
                 var predictedRevenue = safeNumber(row['Predicted Payments']);
                 var actualRevenueFormatted = '$' + Math.round(actualRevenue).toLocaleString();
                 var predictedRevenueFormatted = '$' + Math.round(predictedRevenue).toLocaleString();
