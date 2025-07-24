@@ -1838,8 +1838,8 @@
           }
           // Total Payments Per Week
           var paymentsLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
-          var paymentsData = last6.map(function(row) { return Math.round(safeNumber(row['Total Payments'])); });
-          var avgPayments = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Total Payments']); }, 0) / (filteredData.length || 1));
+          var paymentsData = last6.map(function(row) { return Math.round(safeNumber(row['Payment Amount*'])); });
+          var avgPayments = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Payment Amount*']); }, 0) / (filteredData.length || 1));
           paymentsLabels.push('Avg');
           paymentsData.push(avgPayments);
           var paymentsColors = paymentsLabels.map(function(l, i) { return i === paymentsLabels.length-1 ? '#f093fb' : '#48bb78'; });
