@@ -656,6 +656,24 @@
                 <p style="margin-bottom: 20px; color: #718096;">Download your filtered results as an Excel file for further analysis.</p>
                 <button class="export-btn" onclick="exportToExcel()">📊 Export to Excel</button>
             </div>
+
+            <!-- New Section: Weekly and Average Charts -->
+            <div class="chart-container" style="margin-bottom: 32px;">
+              <div style="display: flex; gap: 32px;">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                  <h2 style="margin-bottom: 8px;">Visits Per Week (Past Six Weeks)</h2>
+                  <canvas id="visitsPerWeekChart" width="350" height="220"></canvas>
+                  <h2 style="margin: 32px 0 8px 0;">New/Existing Payments Per Visit Per Week (Past Six Weeks)</h2>
+                  <canvas id="paymentsPerVisitChart" width="350" height="220"></canvas>
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                  <h2 style="margin-bottom: 8px;">Total Payments Per Week (Past Six Weeks)</h2>
+                  <canvas id="totalPaymentsPerWeekChart" width="350" height="220"></canvas>
+                  <h2 style="margin: 32px 0 8px 0;">Zero Balance Payment Gap Per Week (Past Six Weeks)</h2>
+                  <canvas id="zeroBalanceGapChart" width="350" height="220"></canvas>
+                </div>
+              </div>
+            </div>
         </div>
     </div>
 
@@ -932,6 +950,7 @@
             createRevenueChart();
             updatePerformanceTable();
             createAnalysisCharts();
+            createWeeklyAndAverageCharts();
         }
 
         function setupFilters() {
@@ -1796,6 +1815,75 @@
                 console.error('Error stack:', error.stack);
                 alert('Export failed: ' + error.message + '\n\nPlease check the browser console for details.');
             }
+        }
+
+        function createWeeklyAndAverageCharts() {
+          // Helper to get last 6 weeks
+          var last6 = filteredData.slice(-6);
+          // Visits Per Week
+          var visitsLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
+          var visitsData = last6.map(function(row) { return Math.round(safeNumber(row['Visit Count'])); });
+          var avgVisits = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Visit Count']); }, 0) / (filteredData.length || 1));
+          visitsLabels.push('Avg');
+          visitsData.push(avgVisits);
+          var visitsColors = visitsLabels.map(function(l, i) { return i === visitsLabels.length-1 ? '#f093fb' : '#667eea'; });
+          if (window.visitsPerWeekChartObj) window.visitsPerWeekChartObj.destroy();
+          var ctxVisits = document.getElementById('visitsPerWeekChart');
+          if (ctxVisits) {
+            window.visitsPerWeekChartObj = new Chart(ctxVisits.getContext('2d'), {
+              type: 'bar',
+              data: { labels: visitsLabels, datasets: [{ label: 'Visits', data: visitsData, backgroundColor: visitsColors, borderRadius: 8, borderSkipped: false }] },
+              options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return v; } } }, x: { ticks: { maxRotation: 45, minRotation: 45 } } } }
+            });
+          }
+          // Total Payments Per Week
+          var paymentsLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
+          var paymentsData = last6.map(function(row) { return Math.round(safeNumber(row['Total Payments'])); });
+          var avgPayments = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Total Payments']); }, 0) / (filteredData.length || 1));
+          paymentsLabels.push('Avg');
+          paymentsData.push(avgPayments);
+          var paymentsColors = paymentsLabels.map(function(l, i) { return i === paymentsLabels.length-1 ? '#f093fb' : '#48bb78'; });
+          if (window.totalPaymentsPerWeekChartObj) window.totalPaymentsPerWeekChartObj.destroy();
+          var ctxPayments = document.getElementById('totalPaymentsPerWeekChart');
+          if (ctxPayments) {
+            window.totalPaymentsPerWeekChartObj = new Chart(ctxPayments.getContext('2d'), {
+              type: 'bar',
+              data: { labels: paymentsLabels, datasets: [{ label: 'Total Payments', data: paymentsData, backgroundColor: paymentsColors, borderRadius: 8, borderSkipped: false }] },
+              options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return '$' + v.toLocaleString(); } } }, x: { ticks: { maxRotation: 45, minRotation: 45 } } } }
+            });
+          }
+          // Payments Per Visit
+          var ppvLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
+          var ppvData = last6.map(function(row) { return Math.round(safeNumber(row['Payment per Visit'])); });
+          var avgPPV = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Payment per Visit']); }, 0) / (filteredData.length || 1));
+          ppvLabels.push('Avg');
+          ppvData.push(avgPPV);
+          var ppvColors = ppvLabels.map(function(l, i) { return i === ppvLabels.length-1 ? '#f093fb' : '#667eea'; });
+          if (window.paymentsPerVisitChartObj) window.paymentsPerVisitChartObj.destroy();
+          var ctxPPV = document.getElementById('paymentsPerVisitChart');
+          if (ctxPPV) {
+            window.paymentsPerVisitChartObj = new Chart(ctxPPV.getContext('2d'), {
+              type: 'bar',
+              data: { labels: ppvLabels, datasets: [{ label: 'Payments Per Visit', data: ppvData, backgroundColor: ppvColors, borderRadius: 8, borderSkipped: false }] },
+              options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return '$' + v.toLocaleString(); } } }, x: { ticks: { maxRotation: 45, minRotation: 45 } } } }
+            });
+          }
+          // Zero Balance Payment Gap
+          var zbgLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
+          var zbgData = last6.map(function(row) { return Math.round(safeNumber(row['Zero Balance - Collection * Charges'])); });
+          var avgZBG = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Zero Balance - Collection * Charges']); }, 0) / (filteredData.length || 1));
+          zbgLabels.push('Avg');
+          zbgData.push(avgZBG);
+          var zbgColors = zbgLabels.map(function(l, i) { return i === zbgLabels.length-1 ? '#f093fb' : '#f56565'; });
+          if (window.zeroBalanceGapChartObj) window.zeroBalanceGapChartObj.destroy();
+          var ctxZBG = document.getElementById('zeroBalanceGapChart');
+          if (ctxZBG) {
+            window.zeroBalanceGapChartObj = new Chart(ctxZBG.getContext('2d'), {
+              type: 'bar',
+              data: { labels: zbgLabels, datasets: [{ label: 'Zero Balance Payment Gap', data: zbgData, backgroundColor: zbgColors, borderRadius: 8, borderSkipped: false }] },
+              options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return '$' + v.toLocaleString(); } } }, x: { ticks: { maxRotation: 45, minRotation: 45 } } } }
+            });
+          }
         }
     </script>
 </body>
