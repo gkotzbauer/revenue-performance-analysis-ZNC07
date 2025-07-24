@@ -14,7 +14,21 @@ if (!fs.existsSync(excelPath)) {
 const workbook = xlsx.readFile(excelPath);
 const firstSheetName = workbook.SheetNames[0];
 const worksheet = workbook.Sheets[firstSheetName];
-const jsonData = xlsx.utils.sheet_to_json(worksheet, { defval: null, raw: false });
+const jsonDataRaw = xlsx.utils.sheet_to_json(worksheet, { defval: null, raw: false });
+
+const jsonData = jsonDataRaw.map(row => {
+  const newRow = { ...row };
+  // Rename columns if present
+  if ('NRV Zero Balance' in newRow) {
+    newRow['NRV Zero Balance*'] = newRow['NRV Zero Balance'];
+    delete newRow['NRV Zero Balance'];
+  }
+  if ('Collection Rate' in newRow) {
+    newRow['Collection Rate*'] = newRow['Collection Rate'];
+    delete newRow['Collection Rate'];
+  }
+  return newRow;
+});
 
 fs.writeFileSync(jsonPath, JSON.stringify(jsonData, null, 2));
 console.log('Successfully updated', jsonPath, 'from', excelPath); 
