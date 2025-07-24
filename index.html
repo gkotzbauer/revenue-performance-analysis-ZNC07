@@ -600,6 +600,23 @@
                 </div>
             </div>
 
+            <!-- Move the new charts section here, immediately after filters and before dashboard-grid -->
+            <div class="chart-container" style="margin-bottom: 32px;">
+              <div style="display: flex; gap: 32px;">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                  <h2 style="margin-bottom: 8px;">Visits Per Week (Past Six Weeks)</h2>
+                  <canvas id="visitsPerWeekChart" width="350" height="220"></canvas>
+                  <h2 style="margin: 32px 0 8px 0;">New/Existing Payments Per Visit Per Week (Past Six Weeks)</h2>
+                  <canvas id="paymentsPerVisitChart" width="350" height="220"></canvas>
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                  <h2 style="margin-bottom: 8px;">Total Payments Per Week (Past Six Weeks)</h2>
+                  <canvas id="totalPaymentsPerWeekChart" width="350" height="220"></canvas>
+                  <h2 style="margin: 32px 0 8px 0;">Zero Balance Payment Gap Per Week (Past Six Weeks)</h2>
+                  <canvas id="zeroBalanceGapChart" width="350" height="220"></canvas>
+                </div>
+              </div>
+            </div>
             <div class="dashboard-grid">
                 <div class="summary-card">
                     <h2>📊 Performance Distribution</h2>
@@ -655,24 +672,6 @@
                 <h2>📤 Export Results</h2>
                 <p style="margin-bottom: 20px; color: #718096;">Download your filtered results as an Excel file for further analysis.</p>
                 <button class="export-btn" onclick="exportToExcel()">📊 Export to Excel</button>
-            </div>
-
-            <!-- New Section: Weekly and Average Charts -->
-            <div class="chart-container" style="margin-bottom: 32px;">
-              <div style="display: flex; gap: 32px;">
-                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
-                  <h2 style="margin-bottom: 8px;">Visits Per Week (Past Six Weeks)</h2>
-                  <canvas id="visitsPerWeekChart" width="350" height="220"></canvas>
-                  <h2 style="margin: 32px 0 8px 0;">New/Existing Payments Per Visit Per Week (Past Six Weeks)</h2>
-                  <canvas id="paymentsPerVisitChart" width="350" height="220"></canvas>
-                </div>
-                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
-                  <h2 style="margin-bottom: 8px;">Total Payments Per Week (Past Six Weeks)</h2>
-                  <canvas id="totalPaymentsPerWeekChart" width="350" height="220"></canvas>
-                  <h2 style="margin: 32px 0 8px 0;">Zero Balance Payment Gap Per Week (Past Six Weeks)</h2>
-                  <canvas id="zeroBalanceGapChart" width="350" height="220"></canvas>
-                </div>
-              </div>
             </div>
         </div>
     </div>
