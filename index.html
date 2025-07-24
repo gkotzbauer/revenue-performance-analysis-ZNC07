@@ -1856,8 +1856,8 @@
           }
           // Payments Per Visit
           var ppvLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
-          var ppvData = last6.map(function(row) { return Math.round(safeNumber(row['Payment per Visit'])); });
-          var avgPPV = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Payment per Visit']); }, 0) / (filteredData.length || 1));
+          var ppvData = last6.map(function(row) { return Math.round(safeNumber(row['Avg. Payment per Visit By Payor'])); });
+          var avgPPV = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Avg. Payment per Visit By Payor']); }, 0) / (filteredData.length || 1));
           ppvLabels.push('Avg');
           ppvData.push(avgPPV);
           var ppvColors = ppvLabels.map(function(l, i) { return i === ppvLabels.length-1 ? '#f093fb' : '#667eea'; });
