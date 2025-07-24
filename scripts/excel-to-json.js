@@ -14,7 +14,7 @@ if (!fs.existsSync(excelPath)) {
 const workbook = xlsx.readFile(excelPath);
 const firstSheetName = workbook.SheetNames[0];
 const worksheet = workbook.Sheets[firstSheetName];
-const jsonData = xlsx.utils.sheet_to_json(worksheet);
+const jsonData = xlsx.utils.sheet_to_json(worksheet, { defval: null, raw: false });
 
 fs.writeFileSync(jsonPath, JSON.stringify(jsonData, null, 2));
 console.log('Successfully updated', jsonPath, 'from', excelPath); 
