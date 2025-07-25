@@ -609,8 +609,16 @@
                 <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
                   <h2 style="margin-bottom: 8px;">Visits Per Week</h2>
                   <canvas id="visitsPerWeekChart" width="350" height="220"></canvas>
-                  <h2 style="margin: 32px 0 8px 0;">New/Existing Payments Per Visit</h2>
-                  <canvas id="paymentsPerVisitChart" width="350" height="220"></canvas>
+                  <div style="display: flex; flex-direction: row; gap: 32px; width: 100%; justify-content: center;">
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                      <h2 style="margin: 32px 0 8px 0;">New/Existing Payments Per Visit</h2>
+                      <canvas id="paymentsPerVisitChart" width="350" height="220"></canvas>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                      <h2 style="margin: 32px 0 8px 0;">New/Existing Avg. Weekly Payments</h2>
+                      <canvas id="avgWeeklyPaymentsChart" width="350" height="220"></canvas>
+                    </div>
+                  </div>
                 </div>
                 <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
                   <h2 style="margin-bottom: 8px;">Total Payments Per Week</h2>
@@ -1887,6 +1895,22 @@
             window.zeroBalanceGapChartObj = new Chart(ctxZBG.getContext('2d'), {
               type: 'bar',
               data: { labels: zbgLabels, datasets: [{ label: 'Zero Balance Payment Gap', data: zbgData, backgroundColor: zbgColors, borderRadius: 8, borderSkipped: false }] },
+              options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return '$' + Math.round(context.raw).toLocaleString(); } } } }, scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return '$' + Math.round(v).toLocaleString(); } } }, x: { ticks: { maxRotation: 45, minRotation: 45 } } } }
+            });
+          }
+          // New/Existing Avg. Weekly Payments
+          var avgPayLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
+          var avgPayData = last6.map(function(row) { return Math.round(safeNumber(row['Avg. Payments By Payor'])); });
+          var overallAvgPay = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Avg. Payments By Payor']); }, 0) / (filteredData.length || 1));
+          avgPayLabels.push('Avg');
+          avgPayData.push(overallAvgPay);
+          var avgPayColors = avgPayLabels.map(function(l, i) { return i === avgPayLabels.length-1 ? '#f093fb' : '#667eea'; });
+          if (window.avgWeeklyPaymentsChartObj) window.avgWeeklyPaymentsChartObj.destroy();
+          var ctxAvgPay = document.getElementById('avgWeeklyPaymentsChart');
+          if (ctxAvgPay) {
+            window.avgWeeklyPaymentsChartObj = new Chart(ctxAvgPay.getContext('2d'), {
+              type: 'bar',
+              data: { labels: avgPayLabels, datasets: [{ label: 'Avg. Weekly Payments', data: avgPayData, backgroundColor: avgPayColors, borderRadius: 8, borderSkipped: false }] },
               options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return '$' + Math.round(context.raw).toLocaleString(); } } } }, scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return '$' + Math.round(v).toLocaleString(); } } }, x: { ticks: { maxRotation: 45, minRotation: 45 } } } }
             });
           }
