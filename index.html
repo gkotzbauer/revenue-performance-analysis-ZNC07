@@ -615,8 +615,6 @@
                 <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
                   <h2 style="margin-bottom: 8px;">Total Payments Per Week</h2>
                   <canvas id="totalPaymentsPerWeekChart" width="350" height="220"></canvas>
-                  <h2 style="margin: 32px 0 8px 0;">Potential Rev Cycle Inefficiency ($)</h2>
-                  <canvas id="zeroBalanceGapChart" width="350" height="220"></canvas>
                 </div>
               </div>
             </div>
@@ -629,6 +627,12 @@
                     <h2>💰 Missed / Gained Revenue by Week (for Over & Under Performing Weeks Only)</h2>
                     <canvas id="missedRevenueChart" width="400" height="300"></canvas>
                 </div>
+            </div>
+
+            <!-- New section for Potential Rev Cycle Inefficiency ($) chart -->
+            <div class="chart-container" style="margin-bottom: 32px;">
+              <h2>Potential Rev Cycle Inefficiency ($)</h2>
+              <canvas id="zeroBalanceGapChart" width="700" height="260"></canvas>
             </div>
 
             <div class="action-card" style="margin-bottom: 30px;">
