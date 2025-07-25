@@ -1322,8 +1322,8 @@
                 }
                 
                 var performance = safeString(row['Performance Diagnostic']);
-                var topWentWell = getTop3ActionItems(safeString(row['What Went Well']));
-                var topCanImprove = getTop3ActionItems(safeString(row['What Can Be Improved']));
+                var topWentWell = getTop3ActionItems(safeString(row['What Went Well']), false);
+                var topCanImprove = getTop3ActionItems(safeString(row['What Can Be Improved']), true);
                 
                 tableHTML += '<tr>';
                 tableHTML += '<td style="font-weight: 600;">' + escapeHtml(yearWeek) + '</td>';
@@ -1341,24 +1341,21 @@
             tbody.innerHTML = tableHTML;
         }
 
-        function getTop3ActionItems(sourceText) {
+        function getTop3ActionItems(sourceText, stripValues) {
             if (!sourceText || sourceText.trim() === '') {
                 return '<em>No data available</em>';
             }
-            
             var items = sourceText.split(';');
             var actionItems = [];
-            
             for (var i = 0; i < items.length && actionItems.length < 3; i++) {
                 var rawItem = safeString(items[i]).trim();
                 if (rawItem) {
-                    var actionItem = extractActionItemText(rawItem);
+                    var actionItem = stripValues ? extractActionItemText(rawItem) : rawItem;
                     if (actionItem) {
                         actionItems.push('• ' + escapeHtml(actionItem));
                     }
                 }
             }
-            
             return actionItems.length > 0 ? actionItems.join('<br/>') : '<em>No data available</em>';
         }
 
