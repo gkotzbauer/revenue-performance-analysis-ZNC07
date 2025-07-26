@@ -643,6 +643,8 @@
 
             <div class="action-card" style="margin-bottom: 30px;">
                 <h2>🎯 What You Should Do Next*</h2>
+                
+                <h3 style="margin-top: 20px; margin-bottom: 15px; color: #2d3748; font-size: 1.2em;">Operational Performance</h3>
                 <div class="dashboard-grid" style="margin-top: 20px; display: flex; flex-direction: row; gap: 32px; align-items: flex-start;">
                     <div class="action-box" style="flex: 1;">
                         <h4>🚀 Immediate Actions (Next 30 Days)</h4>
@@ -653,6 +655,19 @@
                         <ul id="keepItUpActions"></ul>
                     </div>
                 </div>
+                
+                <h3 style="margin-top: 30px; margin-bottom: 15px; color: #2d3748; font-size: 1.2em;">Revenue Cycle Efficiency</h3>
+                <div class="dashboard-grid" style="margin-top: 20px; display: flex; flex-direction: row; gap: 32px; align-items: flex-start;">
+                    <div class="action-box" style="flex: 1; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <h4>🚀 Immediate Actions (Next 30 Days)</h4>
+                        <ul id="immediateActions2"></ul>
+                    </div>
+                    <div class="action-box" style="flex: 1; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <h4>📈 Keep It Up</h4>
+                        <ul id="keepItUpActions2"></ul>
+                    </div>
+                </div>
+                
                 <div style="margin-top: 18px; text-align: left; font-size: 0.97em; color: #444;">
                   *Also examine: (1) the 'Underperforming' weeks identified in the section above to determine if there are opportunities to capture missed revenue or determine how to avoid sub-optimal performance in future weeks; (2) The weeks with the highest total dollar amount in the chart above titled 'Potential Rev Cycle Inefficiency ($).' There may be opportunities to avoid payment delays in the future or to capture missed revenue.
                 </div>
@@ -1568,6 +1583,27 @@
                     keepItUpHTML += '<li>' + escapeHtml(keepItUpActions[i].text) + countText + '</li>';
                 }
                 keepItUpActionsElement.innerHTML = keepItUpHTML;
+            }
+
+            // Populate the second set of action boxes (Revenue Cycle Efficiency)
+            var immediateActionsElement2 = document.getElementById('immediateActions2');
+            if (immediateActionsElement2) {
+                var immediateHTML2 = '';
+                for (var i = 0; i < immediateActions.length; i++) {
+                    var countText = immediateActions[i].count > 0 ? ' (' + immediateActions[i].count + ')' : '';
+                    immediateHTML2 += '<li>' + escapeHtml(immediateActions[i].text) + countText + '</li>';
+                }
+                immediateActionsElement2.innerHTML = immediateHTML2;
+            }
+
+            var keepItUpActionsElement2 = document.getElementById('keepItUpActions2');
+            if (keepItUpActionsElement2) {
+                var keepItUpHTML2 = '';
+                for (var i = 0; i < keepItUpActions.length; i++) {
+                    var countText = keepItUpActions[i].count > 0 ? ' (' + keepItUpActions[i].count + ')' : '';
+                    keepItUpHTML2 += '<li>' + escapeHtml(keepItUpActions[i].text) + countText + '</li>';
+                }
+                keepItUpActionsElement2.innerHTML = keepItUpHTML2;
             }
         }
 
