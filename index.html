@@ -2140,8 +2140,8 @@
           }
           // Denial %
           var denialLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
-          var denialData = last6.map(function(row) { return Math.round(safeNumber(row['Denial %'])); });
-          var avgDenial = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Denial %']); }, 0) / (filteredData.length || 1));
+          var denialData = last6.map(function(row) { return Math.round(safeNumber(row['Denial %']) * 100); });
+          var avgDenial = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Denial %']); }, 0) / (filteredData.length || 1) * 100);
           denialLabels.push('Avg');
           denialData.push(avgDenial);
           var denialColors = denialLabels.map(function(l, i) { return i === denialLabels.length-1 ? '#f093fb' : '#f56565'; });
