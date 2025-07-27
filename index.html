@@ -635,11 +635,19 @@
                 </div>
             </div>
 
-            <!-- New section for Potential Rev Cycle Inefficiency ($) chart -->
+            <!-- Revenue Cycle Performance section -->
             <div class="chart-container" style="margin-bottom: 32px;">
-              <h2 style="margin-bottom: 8px;">Revenue Cycle Performance</h2>
-              <h3 style="margin-bottom: 8px;">Rev Cycle Weekly Revenue Gap</h3>
-              <canvas id="zeroBalanceGapChart" width="700" height="260"></canvas>
+              <h2 style="margin-bottom: 8px;">Revenue Cycle Performance Past Six Weeks</h2>
+              <div class="dashboard-grid">
+                <div class="summary-card">
+                  <h3 style="margin-bottom: 8px;">Rev Cycle Weekly Revenue Gap</h3>
+                  <canvas id="zeroBalanceGapChart" width="400" height="300"></canvas>
+                </div>
+                <div class="summary-card">
+                  <h3 style="margin-bottom: 8px;">% of Remaining Charges</h3>
+                  <canvas id="remainingChargesChart" width="400" height="300"></canvas>
+                </div>
+              </div>
             </div>
 
             <div class="action-card" style="margin-bottom: 30px;">
@@ -1931,6 +1939,22 @@
               type: 'bar',
               data: { labels: zbgLabels, datasets: [{ label: 'Zero Balance Payment Gap', data: zbgData, backgroundColor: zbgColors, borderRadius: 8, borderSkipped: false }] },
               options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return '$' + Math.round(context.raw).toLocaleString(); } } } }, scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return '$' + Math.round(v).toLocaleString(); } } }, x: { ticks: { maxRotation: 45, minRotation: 45 } } } }
+            });
+          }
+          // % of Remaining Charges
+          var remainingLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
+          var remainingData = last6.map(function(row) { return Math.round(safeNumber(row['Collection Rate*']) * 100); });
+          var avgRemaining = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Collection Rate*']); }, 0) / (filteredData.length || 1) * 100);
+          remainingLabels.push('Avg');
+          remainingData.push(avgRemaining);
+          var remainingColors = remainingLabels.map(function(l, i) { return i === remainingLabels.length-1 ? '#f093fb' : '#48bb78'; });
+          if (window.remainingChargesChartObj) window.remainingChargesChartObj.destroy();
+          var ctxRemaining = document.getElementById('remainingChargesChart');
+          if (ctxRemaining) {
+            window.remainingChargesChartObj = new Chart(ctxRemaining.getContext('2d'), {
+              type: 'bar',
+              data: { labels: remainingLabels, datasets: [{ label: '% of Remaining Charges', data: remainingData, backgroundColor: remainingColors, borderRadius: 8, borderSkipped: false }] },
+              options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return Math.round(context.raw) + '%'; } } } }, scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return Math.round(v) + '%'; } } }, x: { ticks: { maxRotation: 45, minRotation: 45 } } } }
             });
           }
           // New/Existing Avg. Weekly Payments
