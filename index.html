@@ -1594,13 +1594,136 @@
                 keepItUpActionsElement.innerHTML = keepItUpHTML;
             }
 
+            // Process Revenue Cycle data for the second set of action boxes
+            var revenueCycleCanImproveData = {};
+            var revenueCycleWentWellData = {};
+            
+            for (var i = 0; i < filteredData.length; i++) {
+                var row = filteredData[i];
+                // Only count if Year is 2025
+                if (safeString(row.Year) !== '2025') continue;
+                var yearWeek = safeString(row.Year) + '-' + safeString(row.Week);
+                
+                // Process Revenue Cycle - What Can Be Improved
+                var revenueCycleCanImprove = safeString(row['Revenue Cycle - What Can Be Improved']);
+                if (revenueCycleCanImprove.trim()) {
+                    var items = revenueCycleCanImprove.split(';');
+                    for (var j = 0; j < items.length; j++) {
+                        var rawItem = safeString(items[j]).trim();
+                        if (rawItem) {
+                            var actionItem = extractActionItemText(rawItem);
+                            if (actionItem) {
+                                if (!revenueCycleCanImproveData[actionItem]) {
+                                    revenueCycleCanImproveData[actionItem] = {
+                                        count: 0,
+                                        weeks: []
+                                    };
+                                }
+                                revenueCycleCanImproveData[actionItem].count++;
+                                if (revenueCycleCanImproveData[actionItem].weeks.indexOf(yearWeek) === -1) {
+                                    revenueCycleCanImproveData[actionItem].weeks.push(yearWeek);
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Process Revenue Cycle - What Went Well
+                var revenueCycleWentWell = safeString(row['Revenue Cycle - What Went Well']);
+                if (revenueCycleWentWell.trim()) {
+                    var items = revenueCycleWentWell.split(';');
+                    for (var j = 0; j < items.length; j++) {
+                        var rawItem = safeString(items[j]).trim();
+                        if (rawItem) {
+                            var actionItem = extractActionItemText(rawItem);
+                            if (actionItem) {
+                                if (!revenueCycleWentWellData[actionItem]) {
+                                    revenueCycleWentWellData[actionItem] = {
+                                        count: 0,
+                                        weeks: []
+                                    };
+                                }
+                                revenueCycleWentWellData[actionItem].count++;
+                                if (revenueCycleWentWellData[actionItem].weeks.indexOf(yearWeek) === -1) {
+                                    revenueCycleWentWellData[actionItem].weeks.push(yearWeek);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Sort and get top 3 for Revenue Cycle data
+            var revenueCycleImprovedSorted = Object.entries(revenueCycleCanImproveData)
+                .map(function(entry) {
+                    return {
+                        action: entry[0],
+                        count: entry[1].count
+                    };
+                })
+                .sort(function(a, b) { return b.count - a.count; })
+                .slice(0, 3);
+
+            var revenueCycleWentWellSorted = Object.entries(revenueCycleWentWellData)
+                .map(function(entry) {
+                    return {
+                        action: entry[0],
+                        count: entry[1].count
+                    };
+                })
+                .sort(function(a, b) { return b.count - a.count; })
+                .slice(0, 3);
+
+            // Create Revenue Cycle action items
+            var revenueCycleImmediateActions = [];
+            for (var i = 0; i < revenueCycleImprovedSorted.length; i++) {
+                revenueCycleImmediateActions.push({
+                    text: revenueCycleImprovedSorted[i].action,
+                    count: revenueCycleImprovedSorted[i].count
+                });
+            }
+
+            var revenueCycleDefaultImmediateActions = [
+                'Review revenue cycle workflows',
+                'Analyze collection procedures', 
+                'Implement billing improvements'
+            ];
+            
+            while (revenueCycleImmediateActions.length < 3) {
+                revenueCycleImmediateActions.push({
+                    text: revenueCycleDefaultImmediateActions[revenueCycleImmediateActions.length],
+                    count: 0
+                });
+            }
+
+            var revenueCycleKeepItUpActions = [];
+            for (var i = 0; i < revenueCycleWentWellSorted.length; i++) {
+                revenueCycleKeepItUpActions.push({
+                    text: revenueCycleWentWellSorted[i].action,
+                    count: revenueCycleWentWellSorted[i].count
+                });
+            }
+
+            var revenueCycleDefaultKeepItUpActions = [
+                'Continue effective collection practices',
+                'Maintain billing accuracy standards',
+                'Keep up revenue cycle efficiency'
+            ];
+            
+            while (revenueCycleKeepItUpActions.length < 3) {
+                revenueCycleKeepItUpActions.push({
+                    text: revenueCycleDefaultKeepItUpActions[revenueCycleKeepItUpActions.length],
+                    count: 0
+                });
+            }
+
             // Populate the second set of action boxes (Revenue Cycle Efficiency)
             var immediateActionsElement2 = document.getElementById('immediateActions2');
             if (immediateActionsElement2) {
                 var immediateHTML2 = '';
-                for (var i = 0; i < immediateActions.length; i++) {
-                    var countText = immediateActions[i].count > 0 ? ' (' + immediateActions[i].count + ')' : '';
-                    immediateHTML2 += '<li>' + escapeHtml(immediateActions[i].text) + countText + '</li>';
+                for (var i = 0; i < revenueCycleImmediateActions.length; i++) {
+                    var countText = revenueCycleImmediateActions[i].count > 0 ? ' (' + revenueCycleImmediateActions[i].count + ')' : '';
+                    immediateHTML2 += '<li>' + escapeHtml(revenueCycleImmediateActions[i].text) + countText + '</li>';
                 }
                 immediateActionsElement2.innerHTML = immediateHTML2;
             }
@@ -1608,9 +1731,9 @@
             var keepItUpActionsElement2 = document.getElementById('keepItUpActions2');
             if (keepItUpActionsElement2) {
                 var keepItUpHTML2 = '';
-                for (var i = 0; i < keepItUpActions.length; i++) {
-                    var countText = keepItUpActions[i].count > 0 ? ' (' + keepItUpActions[i].count + ')' : '';
-                    keepItUpHTML2 += '<li>' + escapeHtml(keepItUpActions[i].text) + countText + '</li>';
+                for (var i = 0; i < revenueCycleKeepItUpActions.length; i++) {
+                    var countText = revenueCycleKeepItUpActions[i].count > 0 ? ' (' + revenueCycleKeepItUpActions[i].count + ')' : '';
+                    keepItUpHTML2 += '<li>' + escapeHtml(revenueCycleKeepItUpActions[i].text) + countText + '</li>';
                 }
                 keepItUpActionsElement2.innerHTML = keepItUpHTML2;
             }
