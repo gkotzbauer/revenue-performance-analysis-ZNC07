@@ -644,9 +644,17 @@
                   <canvas id="zeroBalanceGapChart" width="400" height="300"></canvas>
                 </div>
                 <div class="summary-card">
-                  <h3 style="margin-bottom: 8px;">% of Remaining Charges</h3>
+                  <h3 style="margin-bottom: 8px;">% of Remaining Billed Charges</h3>
                   <canvas id="remainingChargesChart" width="400" height="300"></canvas>
                 </div>
+              </div>
+              
+              <div class="dashboard-grid" style="margin-top: 20px;">
+                <div class="summary-card">
+                  <h3 style="margin-bottom: 8px;">Denial %</h3>
+                  <canvas id="denialChart" width="400" height="300"></canvas>
+                </div>
+              </div>
               </div>
             </div>
 
@@ -682,10 +690,7 @@
                 </div>
             </div>
 
-            <div class="chart-container">
-                <h2>📊 Performance Improvement Analysis</h2>
-                <div class="chart-grid" id="analysisCharts"></div>
-            </div>
+
 
             <div class="chart-container">
                 <h2>📈 Revenue Performance - Recent 6 Months</h2>
@@ -988,7 +993,6 @@
             updateCharts();
             createRevenueChart();
             updatePerformanceTable();
-            createAnalysisCharts();
             createWeeklyAndAverageCharts();
         }
 
@@ -1078,7 +1082,7 @@
             updateCharts();
             createRevenueChart();
             updatePerformanceTable();
-            createAnalysisCharts();
+            updateRecommendationsFromChartData();
         }
 
         function updateCharts() {
@@ -1506,8 +1510,67 @@
         function updateRecommendationsFromChartData() {
             console.log('=== DEBUG: updateRecommendationsFromChartData ===');
             
-            var whatCanBeImprovedData = chartDataResults['What Can Be Improved'] || {};
-            var improvedSorted = Object.entries(whatCanBeImprovedData)
+            // Process Operational data directly from filtered data
+            var operationalCanImproveData = {};
+            var operationalWentWellData = {};
+            
+            for (var i = 0; i < filteredData.length; i++) {
+                var row = filteredData[i];
+                // Only count if Year is 2025
+                if (safeString(row.Year) !== '2025') continue;
+                var yearWeek = safeString(row.Year) + '-' + safeString(row.Week);
+                
+                // Process Operational - What Can Be Improved
+                var operationalCanImprove = safeString(row['Operational - What Can Be Improved']);
+                if (operationalCanImprove.trim()) {
+                    var items = operationalCanImprove.split(';');
+                    for (var j = 0; j < items.length; j++) {
+                        var rawItem = safeString(items[j]).trim();
+                        if (rawItem) {
+                            var actionItem = extractActionItemText(rawItem);
+                            if (actionItem) {
+                                if (!operationalCanImproveData[actionItem]) {
+                                    operationalCanImproveData[actionItem] = {
+                                        count: 0,
+                                        weeks: []
+                                    };
+                                }
+                                operationalCanImproveData[actionItem].count++;
+                                if (operationalCanImproveData[actionItem].weeks.indexOf(yearWeek) === -1) {
+                                    operationalCanImproveData[actionItem].weeks.push(yearWeek);
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Process Operational - What Went Well
+                var operationalWentWell = safeString(row['Operational - What Went Well']);
+                if (operationalWentWell.trim()) {
+                    var items = operationalWentWell.split(';');
+                    for (var j = 0; j < items.length; j++) {
+                        var rawItem = safeString(items[j]).trim();
+                        if (rawItem) {
+                            var actionItem = extractActionItemText(rawItem);
+                            if (actionItem) {
+                                if (!operationalWentWellData[actionItem]) {
+                                    operationalWentWellData[actionItem] = {
+                                        count: 0,
+                                        weeks: []
+                                    };
+                                }
+                                operationalWentWellData[actionItem].count++;
+                                if (operationalWentWellData[actionItem].weeks.indexOf(yearWeek) === -1) {
+                                    operationalWentWellData[actionItem].weeks.push(yearWeek);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Sort and get top 3 for Operational data
+            var improvedSorted = Object.entries(operationalCanImproveData)
                 .map(function(entry) {
                     return {
                         action: entry[0],
@@ -1519,8 +1582,7 @@
 
             console.log('Top 3 "What Can Be Improved":', improvedSorted);
 
-            var whatWentWellData = chartDataResults['What Went Well'] || {};
-            var wentWellSorted = Object.entries(whatWentWellData)
+            var wentWellSorted = Object.entries(operationalWentWellData)
                 .map(function(entry) {
                     return {
                         action: entry[0],
@@ -2076,7 +2138,23 @@
           if (ctxRemaining) {
             window.remainingChargesChartObj = new Chart(ctxRemaining.getContext('2d'), {
               type: 'bar',
-              data: { labels: remainingLabels, datasets: [{ label: '% of Remaining Charges', data: remainingData, backgroundColor: remainingColors, borderRadius: 8, borderSkipped: false }] },
+              data: { labels: remainingLabels, datasets: [{ label: '% of Remaining Billed Charges', data: remainingData, backgroundColor: remainingColors, borderRadius: 8, borderSkipped: false }] },
+              options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return Math.round(context.raw) + '%'; } } } }, scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return Math.round(v) + '%'; } } }, x: { ticks: { maxRotation: 45, minRotation: 45 } } } }
+            });
+          }
+          // Denial %
+          var denialLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
+          var denialData = last6.map(function(row) { return Math.round(safeNumber(row['Denial %'])); });
+          var avgDenial = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Denial %']); }, 0) / (filteredData.length || 1));
+          denialLabels.push('Avg');
+          denialData.push(avgDenial);
+          var denialColors = denialLabels.map(function(l, i) { return i === denialLabels.length-1 ? '#f093fb' : '#f56565'; });
+          if (window.denialChartObj) window.denialChartObj.destroy();
+          var ctxDenial = document.getElementById('denialChart');
+          if (ctxDenial) {
+            window.denialChartObj = new Chart(ctxDenial.getContext('2d'), {
+              type: 'bar',
+              data: { labels: denialLabels, datasets: [{ label: 'Denial %', data: denialData, backgroundColor: denialColors, borderRadius: 8, borderSkipped: false }] },
               options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return Math.round(context.raw) + '%'; } } } }, scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return Math.round(v) + '%'; } } }, x: { ticks: { maxRotation: 45, minRotation: 45 } } } }
             });
           }
