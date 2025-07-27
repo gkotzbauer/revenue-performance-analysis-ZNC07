@@ -1383,6 +1383,18 @@
                 tableHTML += '<td colspan="2" style="padding: 8px 12px; font-size: 0.85rem;"><strong>What Went Well:</strong><br/>' + topWentWell + '</td>';
                 tableHTML += '<td colspan="3" style="padding: 8px 12px; font-size: 0.85rem;"><strong>What Can Be Improved:</strong><br/>' + topCanImprove + '</td>';
                 tableHTML += '</tr>';
+                
+                // Revenue Cycle Performance Insights
+                var topRevenueWentWell = getTop3ActionItems(safeString(row['Revenue Cycle - What Went Well']), false);
+                var topRevenueCanImprove = getTop3ActionItems(safeString(row['Revenue Cycle - What Can Be Improved']), false);
+                
+                tableHTML += '<tr style="background-color: #f8f9fa;">';
+                tableHTML += '<td colspan="5" style="padding: 8px 12px; font-size: 1rem; font-weight: 600; color: #2d3748; text-align: left;">Revenue Cycle Performance Insights</td>';
+                tableHTML += '</tr>';
+                tableHTML += '<tr style="background-color: #f8f9fa;">';
+                tableHTML += '<td colspan="2" style="padding: 8px 12px; font-size: 0.85rem;"><strong>What Went Well:</strong><br/>' + topRevenueWentWell + '</td>';
+                tableHTML += '<td colspan="3" style="padding: 8px 12px; font-size: 0.85rem;"><strong>What Can Be Improved:</strong><br/>' + topRevenueCanImprove + '</td>';
+                tableHTML += '</tr>';
             }
             tbody.innerHTML = tableHTML;
         }
