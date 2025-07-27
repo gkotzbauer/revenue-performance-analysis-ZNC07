@@ -1357,7 +1357,7 @@
                 
                 var performance = safeString(row['Performance Diagnostic']);
                 var topWentWell = getTop3ActionItems(safeString(row['Operational - What Went Well']), false);
-                var topCanImprove = getTop3ActionItems(safeString(row['Operational - What Can Be Improved']), true);
+                var topCanImprove = getTop3ActionItems(safeString(row['Operational - What Can Be Improved']), false);
                 
                 tableHTML += '<tr>';
                 tableHTML += '<td style="font-weight: 600;">' + escapeHtml(yearWeek) + '</td>';
