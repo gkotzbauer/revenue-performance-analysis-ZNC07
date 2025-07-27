@@ -1348,7 +1348,7 @@
                 }
                 
                 var performance = safeString(row['Performance Diagnostic']);
-                var topWentWell = getTop3ActionItems(safeString(row['What Went Well']), false);
+                var topWentWell = getTop3ActionItems(safeString(row['Operational - What Went Well']), false);
                 var topCanImprove = getTop3ActionItems(safeString(row['Operational - What Can Be Improved']), true);
                 
                 tableHTML += '<tr>';
@@ -1420,7 +1420,7 @@
 
             var chartConfigs = [
                 { title: 'What Can Be Improved', source: 'Operational - What Can Be Improved', filter: 'all' },
-                { title: 'What Went Well', source: 'What Went Well', filter: 'all' }
+                { title: 'What Went Well', source: 'Operational - What Went Well', filter: 'all' }
             ];
 
             for (var config = 0; config < chartConfigs.length; config++) {
