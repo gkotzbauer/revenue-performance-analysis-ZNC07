@@ -1349,7 +1349,7 @@
                 
                 var performance = safeString(row['Performance Diagnostic']);
                 var topWentWell = getTop3ActionItems(safeString(row['What Went Well']), false);
-                var topCanImprove = getTop3ActionItems(safeString(row['What Can Be Improved']), true);
+                var topCanImprove = getTop3ActionItems(safeString(row['Operational - What Can Be Improved']), true);
                 
                 tableHTML += '<tr>';
                 tableHTML += '<td style="font-weight: 600;">' + escapeHtml(yearWeek) + '</td>';
@@ -1419,7 +1419,7 @@
             console.log('Total filtered data rows:', filteredData.length);
 
             var chartConfigs = [
-                { title: 'What Can Be Improved', source: 'What Can Be Improved', filter: 'all' },
+                { title: 'What Can Be Improved', source: 'Operational - What Can Be Improved', filter: 'all' },
                 { title: 'What Went Well', source: 'What Went Well', filter: 'all' }
             ];
 
