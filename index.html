@@ -1443,8 +1443,6 @@
                 
                 for (var i = 0; i < filteredData.length; i++) {
                     var row = filteredData[i];
-                    // Only count if Year is 2025
-                    if (safeString(row.Year) !== '2025') continue;
                     var yearWeek = safeString(row.Year) + '-' + safeString(row.Week);
                     var sourceData = safeString(row[chartConfig.source]);
                     
@@ -1662,8 +1660,6 @@
             
             for (var i = 0; i < filteredData.length; i++) {
                 var row = filteredData[i];
-                // Only count if Year is 2025
-                if (safeString(row.Year) !== '2025') continue;
                 var yearWeek = safeString(row.Year) + '-' + safeString(row.Week);
                 
                 // Process Revenue Cycle - What Can Be Improved
