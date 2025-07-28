@@ -665,6 +665,12 @@
               </div>
               <div class="dashboard-grid" style="margin-top: 20px;">
                 <div class="summary-card">
+                  <h3 style="margin-bottom: 8px;">Zero-Balance Collection Narrative</h3>
+                  <canvas id="zeroBalanceNarrativeChart" width="400" height="300"></canvas>
+                </div>
+              </div>
+              <div class="dashboard-grid" style="margin-top: 20px;">
+                <div class="summary-card">
                   <h3 style="margin-bottom: 8px;">Net Revenue Per Visit Gap</h3>
                   <canvas id="nrvGapChart" width="400" height="300"></canvas>
                 </div>
@@ -2232,6 +2238,64 @@
                     ticks: { 
                       callback: function(v) { 
                         return '$' + Math.round(v).toLocaleString(); 
+                      } 
+                    } 
+                  }, 
+                  x: { 
+                    ticks: { maxRotation: 45, minRotation: 45 } 
+                  } 
+                } 
+              }
+            });
+          }
+          // Zero-Balance Collection Narrative
+          var narrativeCounts = {};
+          filteredData.forEach(function(row) {
+            var narrative = safeString(row['Zero-Balance Collection Narrative']);
+            if (narrative && narrative.trim() !== '') {
+              narrativeCounts[narrative] = (narrativeCounts[narrative] || 0) + 1;
+            }
+          });
+          
+          var narrativeLabels = Object.keys(narrativeCounts);
+          var narrativeData = Object.values(narrativeCounts);
+          var narrativeColors = narrativeLabels.map(function(l, i) { 
+            return ['#667eea', '#f093fb', '#48bb78', '#f56565'][i % 4]; 
+          });
+          
+          if (window.zeroBalanceNarrativeChartObj) window.zeroBalanceNarrativeChartObj.destroy();
+          var ctxNarrative = document.getElementById('zeroBalanceNarrativeChart');
+          if (ctxNarrative) {
+            window.zeroBalanceNarrativeChartObj = new Chart(ctxNarrative.getContext('2d'), {
+              type: 'bar',
+              data: { 
+                labels: narrativeLabels, 
+                datasets: [{ 
+                  label: 'Zero-Balance Collection Narrative', 
+                  data: narrativeData, 
+                  backgroundColor: narrativeColors, 
+                  borderRadius: 8, 
+                  borderSkipped: false 
+                }] 
+              },
+              options: { 
+                responsive: true, 
+                plugins: { 
+                  legend: { display: false }, 
+                  tooltip: { 
+                    callbacks: { 
+                      label: function(context) { 
+                        return context.parsed.y + ' occurrences'; 
+                      } 
+                    } 
+                  } 
+                }, 
+                scales: { 
+                  y: { 
+                    beginAtZero: true, 
+                    ticks: { 
+                      callback: function(v) { 
+                        return Math.round(v); 
                       } 
                     } 
                   }, 
