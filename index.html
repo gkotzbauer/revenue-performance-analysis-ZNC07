@@ -659,6 +659,12 @@
                   <canvas id="zeroBalanceCollectionChart" width="400" height="300"></canvas>
                 </div>
               </div>
+              <div class="dashboard-grid" style="margin-top: 20px;">
+                <div class="summary-card">
+                  <h3 style="margin-bottom: 8px;">Net Revenue per Visit Gap</h3>
+                  <canvas id="nrvGapChart" width="400" height="300"></canvas>
+                </div>
+              </div>
               </div>
             </div>
 
@@ -2186,6 +2192,50 @@
               type: 'bar',
               data: { labels: zbcLabels, datasets: [{ label: 'Zero Balance Collection Rate', data: zbcData, backgroundColor: zbcColors, borderRadius: 8, borderSkipped: false }] },
               options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return Math.round(context.raw) + '%'; } } } }, scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return Math.round(v) + '%'; } } }, x: { ticks: { maxRotation: 45, minRotation: 45 } } } }
+            });
+          }
+          // Net Revenue per Visit Gap
+          var nrvLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
+          var nrvData = last6.map(function(row) { return Math.round(safeNumber(row['NRV Gap Sum ($)'])); });
+          var avgNRV = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['NRV Gap Sum ($)']); }, 0) / (filteredData.length || 1));
+          nrvLabels.push('Avg');
+          nrvData.push(avgNRV);
+          var nrvColors = nrvLabels.map(function(l, i) { 
+            if (i === nrvLabels.length-1) return '#f093fb'; // Average bar
+            return nrvData[i] >= 0 ? '#48bb78' : '#f56565'; // Green for positive, red for negative
+          });
+          if (window.nrvGapChartObj) window.nrvGapChartObj.destroy();
+          var ctxNRV = document.getElementById('nrvGapChart');
+          if (ctxNRV) {
+            window.nrvGapChartObj = new Chart(ctxNRV.getContext('2d'), {
+              type: 'bar',
+              data: { labels: nrvLabels, datasets: [{ label: 'Net Revenue per Visit Gap', data: nrvData, backgroundColor: nrvColors, borderRadius: 8, borderSkipped: false }] },
+              options: { 
+                responsive: true, 
+                plugins: { 
+                  legend: { display: false }, 
+                  tooltip: { 
+                    callbacks: { 
+                      label: function(context) { 
+                        return '$' + Math.round(context.raw).toLocaleString(); 
+                      } 
+                    } 
+                  } 
+                }, 
+                scales: { 
+                  y: { 
+                    beginAtZero: false, // Allow negative values
+                    ticks: { 
+                      callback: function(v) { 
+                        return '$' + Math.round(v).toLocaleString(); 
+                      } 
+                    } 
+                  }, 
+                  x: { 
+                    ticks: { maxRotation: 45, minRotation: 45 } 
+                  } 
+                } 
+              }
             });
           }
           // New/Existing Avg. Weekly Payments
