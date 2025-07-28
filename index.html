@@ -1970,9 +1970,9 @@
                     exportData.push({
                         'Year': safeString(row.Year),
                         'Week': safeString(row.Week),
-                        'Actual Revenue': Math.round(safeNumber(row['Total Payments'])),
-                        'Predicted Revenue': Math.round(safeNumber(row['Predicted Payments'])),
-                        'Revenue Difference': Math.round(safeNumber(row['Total Payments']) - safeNumber(row['Predicted Payments'])),
+                        'Actual Revenue': Math.round(safeNumber(row['Payment Amount*'])),
+                        'Predicted Revenue': Math.round(safeNumber(row['Expected Payments (RF)'])),
+                        'Revenue Difference': Math.round(safeNumber(row['Missed Revenue (RF)'])),
                         'Performance Diagnostic': safeString(row['Performance Diagnostic']),
                         'Payment per Visit': Math.round(safeNumber(row['Payment per Visit'])),
                         'Collection Rate': Math.round(safeNumber(row['Collection Rate']) * 100) + '%',
@@ -2000,10 +2000,9 @@
                         diagnosticCounts[diagnostic] = (diagnosticCounts[diagnostic] || 0) + 1;
                     }
                     
-                    var actualRevenue = safeNumber(row['Total Payments']);
-                    var predictedRevenue = safeNumber(row['Predicted Payments']);
-                    if (actualRevenue < predictedRevenue) {
-                        totalMissedRevenue += Math.round(predictedRevenue - actualRevenue);
+                    var missedRevenue = safeNumber(row['Missed Revenue (RF)']);
+                    if (missedRevenue < 0) {
+                        totalMissedRevenue += Math.round(Math.abs(missedRevenue));
                     }
                 }
 
