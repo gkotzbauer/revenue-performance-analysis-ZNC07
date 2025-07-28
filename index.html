@@ -823,37 +823,65 @@
                     document.getElementById('dashboardContent').classList.remove('hidden');
                 })
                 .catch(error => {
-                    console.log('Excel loading failed, using embedded data:', error.message);
+                    console.log('Excel loading failed, trying JSON fallback:', error.message);
                     
-                    // Fallback: Use embedded data only (no JSON fallback)
-                    if (typeof embeddedData !== 'undefined' && embeddedData && embeddedData.length > 0) {
-                        console.log('=== EMBEDDED DATA LOADED ===');
-                        console.log('Embedded data type:', typeof embeddedData);
-                        console.log('Embedded data length:', embeddedData.length);
-                        
-                        originalData = embeddedData;
-                        filteredData = originalData.slice();
-                        
-                        console.log('Total rows loaded:', embeddedData.length);
-                        console.log('Sample row:', embeddedData[0]);
-                        
-                        // Initialize dashboard with embedded data
-                        initializeDashboard();
-                        document.getElementById('loadingSection').classList.add('hidden');
-                        document.getElementById('dashboardContent').classList.remove('hidden');
-                    } else {
-                        console.error('Excel file and embedded data failed');
-                        console.error('Embedded data check:', {
-                            type: typeof embeddedData,
-                            isArray: Array.isArray(embeddedData),
-                            length: embeddedData ? embeddedData.length : 'undefined',
-                            firstItem: embeddedData ? embeddedData[0] : 'undefined'
+                    // Fallback: Try JSON file first, then embedded data
+                    fetch('data/revenue-data.json?v=' + Date.now())
+                        .then(response => {
+                            console.log('JSON fetch response status:', response.status);
+                            if (!response.ok) {
+                                throw new Error('JSON file not found');
+                            }
+                            return response.json();
+                        })
+                        .then(jsonData => {
+                            console.log('=== JSON FALLBACK DATA LOADED ===');
+                            console.log('JSON data length:', jsonData.length);
+                            
+                            originalData = jsonData;
+                            filteredData = originalData.slice();
+                            
+                            console.log('Total rows loaded from JSON:', jsonData.length);
+                            console.log('Sample row from JSON:', jsonData[0]);
+                            
+                            // Initialize dashboard with JSON data
+                            initializeDashboard();
+                            document.getElementById('loadingSection').classList.add('hidden');
+                            document.getElementById('dashboardContent').classList.remove('hidden');
+                        })
+                        .catch(jsonError => {
+                            console.log('JSON loading failed, using embedded data:', jsonError.message);
+                            
+                            // Final fallback: Use embedded data
+                            if (typeof embeddedData !== 'undefined' && embeddedData && embeddedData.length > 0) {
+                                console.log('=== EMBEDDED DATA LOADED ===');
+                                console.log('Embedded data type:', typeof embeddedData);
+                                console.log('Embedded data length:', embeddedData.length);
+                                
+                                originalData = embeddedData;
+                                filteredData = originalData.slice();
+                                
+                                console.log('Total rows loaded from embedded data:', embeddedData.length);
+                                console.log('Sample row from embedded data:', embeddedData[0]);
+                                
+                                // Initialize dashboard with embedded data
+                                initializeDashboard();
+                                document.getElementById('loadingSection').classList.add('hidden');
+                                document.getElementById('dashboardContent').classList.remove('hidden');
+                            } else {
+                                console.error('All data sources failed');
+                                console.error('Embedded data check:', {
+                                    type: typeof embeddedData,
+                                    isArray: Array.isArray(embeddedData),
+                                    length: embeddedData ? embeddedData.length : 'undefined',
+                                    firstItem: embeddedData ? embeddedData[0] : 'undefined'
+                                });
+                                document.getElementById('loadingSection').classList.add('hidden');
+                                // Show error in a more user-friendly way
+                                document.getElementById('dashboardContent').classList.remove('hidden');
+                                document.getElementById('dashboardContent').innerHTML = '<div class="upload-section"><p style="color: #f56565;">❌ Error loading data: No data sources available.</p><p style="color: #667eea; margin-top: 10px;">Please ensure revenue-data.xlsx or revenue-data.json exists in the data folder.</p><p style="color: #718096; font-size: 0.9rem; margin-top: 10px;">Debug info: ' + escapeHtml(error.message) + '</p></div>';
+                            }
                         });
-                        document.getElementById('loadingSection').classList.add('hidden');
-                        // Show error in a more user-friendly way
-                        document.getElementById('dashboardContent').classList.remove('hidden');
-                        document.getElementById('dashboardContent').innerHTML = '<div class="upload-section"><p style="color: #f56565;">❌ Error loading data: Excel file not found.</p><p style="color: #667eea; margin-top: 10px;">Please ensure revenue-data.xlsx exists in the data folder.</p><p style="color: #718096; font-size: 0.9rem; margin-top: 10px;">Debug info: ' + escapeHtml(error.message) + '</p></div>';
-                    }
                 });
         }
 
