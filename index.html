@@ -1255,8 +1255,8 @@
                     var chartLabels = revenueOpportunityData.map(function(d) { return d.week; });
                     var chartData = revenueOpportunityData.map(function(d) { return d.value; });
                     var chartColors = revenueOpportunityData.map(function(d) {
-                        if (d.performance === 'Over Performed') return '#48bb78';
-                        if (d.performance === 'Under Performed') return '#f56565';
+                        if (d.value >= 0) return '#48bb78'; // Green for positive values (above baseline)
+                        if (d.value < 0) return '#f56565';  // Red for negative values (below baseline)
                         return '#718096';
                     });
 
