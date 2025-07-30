@@ -2358,13 +2358,22 @@
               items.forEach(function(item) {
                 item = item.trim();
                 if (item) {
+                  // Find which payer this item belongs to
+                  var foundPayer = null;
                   payers.forEach(function(payer) {
+                    if (item.startsWith(payer + ' – ')) {
+                      foundPayer = payer;
+                    }
+                  });
+                  
+                  if (foundPayer) {
+                    // Find which category this item belongs to
                     categories.forEach(function(category) {
-                      if (item.includes(payer + ' – ' + category)) {
-                        payerData[payer][category]++;
+                      if (item.includes(' – ' + category)) {
+                        payerData[foundPayer][category]++;
                       }
                     });
-                  });
+                  }
                 }
               });
             }
