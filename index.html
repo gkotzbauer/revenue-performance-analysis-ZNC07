@@ -1391,11 +1391,11 @@
                 var row = last10Weeks[i];
                 var yearWeek = safeString(row.Year) + '-' + safeString(row.Week);
                 var actualRevenue = safeNumber(row['Payment Amount*']);
-                var predictedRevenue = safeNumber(row['Expected Payments (RF)']);
+                var predictedRevenue = safeNumber(row['Expected Payments']);
                 var actualRevenueFormatted = '$' + Math.round(actualRevenue).toLocaleString();
                 var predictedRevenueFormatted = '$' + Math.round(predictedRevenue).toLocaleString();
                 
-                var missedGainedRevenue = safeNumber(row['Missed Revenue (RF)']);
+                var missedGainedRevenue = safeNumber(row['Missed Revenue']);
                 var missedGainedRevenueFormatted = '';
                 var revenueColor = '#718096';
                 
