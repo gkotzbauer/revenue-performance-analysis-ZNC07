@@ -626,7 +626,7 @@
             </div>
             <div class="dashboard-grid">
                 <div class="summary-card">
-                    <h2>📊 Weekly Performance Analysis (All Weeks)</h2>
+                    <h2>📊 Weekly Performance Analysis (2025 Weeks Only)</h2>
                     <canvas id="performanceDistributionChart" width="400" height="300"></canvas>
                 </div>
                 <div class="summary-card">
@@ -709,7 +709,7 @@
 
 
             <div class="table-container">
-                <h2>�� Weekly Performance Details - Last 6 Weeks</h2>
+                <h2>Weekly Performance Details - Last 10 Weeks</h2>
                 <table id="performanceTable">
                     <thead>
                         <tr>
@@ -1131,9 +1131,14 @@
         }
 
         function updateCharts() {
+            // Filter data to only include 2025 weeks
+            var data2025 = filteredData.filter(function(row) {
+                return safeString(row.Year) === '2025';
+            });
+            
             var diagnosticCounts = {};
-            for (var i = 0; i < filteredData.length; i++) {
-                var diagnostic = safeString(filteredData[i]['Performance Diagnostic']);
+            for (var i = 0; i < data2025.length; i++) {
+                var diagnostic = safeString(data2025[i]['Performance Diagnostic']);
                 if (diagnostic) {
                     diagnosticCounts[diagnostic] = (diagnosticCounts[diagnostic] || 0) + 1;
                 }
@@ -1194,8 +1199,9 @@
             }
 
             var revenueOpportunityData = [];
-            for (var i = 0; i < filteredData.length; i++) {
-                var row = filteredData[i];
+            // Only include weeks that are Over/Under Performed in the 2025 data
+            for (var i = 0; i < data2025.length; i++) {
+                var row = data2025[i];
                 var performance = safeString(row['Performance Diagnostic']);
                 if (performance === 'Over Performed' || performance === 'Under Performed') {
                     var missedRevenue = Math.round(safeNumber(row['Missed Revenue (RF)']));
