@@ -2334,19 +2334,52 @@
               }
             });
           }
-          // Zero-Balance Collection Narrative
-          var narrativeCounts = {};
-          filteredData.forEach(function(row) {
+          // Zero-Balance Collection Narrative - Stacked Bar Chart
+          var payers = ['1-SELF PAY', '12-HUMANA', '13-TRICARE', '15-UNITED HEALTHCARE', '4-MEDICAID', '5-COMMERCIAL', '18-CIGNA', '3-MEDICARE', '17-AETNA', '2-BCBS'];
+          var categories = ['Collection Data Incomplete', 'Very Low Zero-Balance Collection vs Baseline', 'Low Zero-Balance Collection vs Baseline', 'Unusually High Zero-Balance vs Total Collection', 'Normal range'];
+          
+          // Get last 10 weeks of data
+          var last10Weeks = filteredData.slice(-10);
+          
+          // Initialize data structure for each payer
+          var payerData = {};
+          payers.forEach(function(payer) {
+            payerData[payer] = {};
+            categories.forEach(function(category) {
+              payerData[payer][category] = 0;
+            });
+          });
+          
+          // Count occurrences for each payer and category over the last 10 weeks
+          last10Weeks.forEach(function(row) {
             var narrative = safeString(row['Zero-Balance Collection Narrative']);
             if (narrative && narrative.trim() !== '') {
-              narrativeCounts[narrative] = (narrativeCounts[narrative] || 0) + 1;
+              var items = narrative.split(';');
+              items.forEach(function(item) {
+                item = item.trim();
+                if (item) {
+                  payers.forEach(function(payer) {
+                    categories.forEach(function(category) {
+                      if (item.includes(payer + ' – ' + category)) {
+                        payerData[payer][category]++;
+                      }
+                    });
+                  });
+                }
+              });
             }
           });
           
-          var narrativeLabels = Object.keys(narrativeCounts);
-          var narrativeData = Object.values(narrativeCounts);
-          var narrativeColors = narrativeLabels.map(function(l, i) { 
-            return ['#667eea', '#f093fb', '#48bb78', '#f56565'][i % 4]; 
+          // Create datasets for stacked bar chart
+          var datasets = categories.map(function(category, index) {
+            var colors = ['#667eea', '#f093fb', '#48bb78', '#f56565', '#f6ad55'];
+            return {
+              label: category,
+              data: payers.map(function(payer) { return payerData[payer][category]; }),
+              backgroundColor: colors[index],
+              borderRadius: 8,
+              borderSkipped: false
+            };
           });
           
           if (window.zeroBalanceNarrativeChartObj) window.zeroBalanceNarrativeChartObj.destroy();
@@ -2355,39 +2388,41 @@
             window.zeroBalanceNarrativeChartObj = new Chart(ctxNarrative.getContext('2d'), {
               type: 'bar',
               data: { 
-                labels: narrativeLabels, 
-                datasets: [{ 
-                  label: 'Zero-Balance Collection Narrative', 
-                  data: narrativeData, 
-                  backgroundColor: narrativeColors, 
-                  borderRadius: 8, 
-                  borderSkipped: false 
-                }] 
+                labels: payers, 
+                datasets: datasets
               },
               options: { 
                 responsive: true, 
                 plugins: { 
-                  legend: { display: false }, 
+                  legend: { 
+                    display: true,
+                    position: 'bottom'
+                  }, 
                   tooltip: { 
                     callbacks: { 
                       label: function(context) { 
-                        return context.parsed.y + ' occurrences'; 
+                        return context.dataset.label + ': ' + context.parsed.y + ' occurrences'; 
                       } 
                     } 
                   } 
                 }, 
                 scales: { 
+                  x: {
+                    stacked: true,
+                    ticks: { 
+                      maxRotation: 45, 
+                      minRotation: 45 
+                    } 
+                  },
                   y: { 
+                    stacked: true,
                     beginAtZero: true, 
                     ticks: { 
                       callback: function(v) { 
                         return Math.round(v); 
                       } 
                     } 
-                  }, 
-                  x: { 
-                    ticks: { maxRotation: 45, minRotation: 45 } 
-                  } 
+                  }
                 } 
               }
             });
