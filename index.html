@@ -1196,8 +1196,8 @@
                 var row = filteredData[i];
                 var performance = safeString(row['Performance Diagnostic']);
                 if (performance === 'Over Performed' || performance === 'Under Performed') {
-                    var absError = Math.round(safeNumber(row['Absolute Error']));
-                    var value = (performance === 'Over Performed') ? absError : -absError;
+                    var missedRevenue = Math.round(safeNumber(row['Missed Revenue (RF)']));
+                    var value = missedRevenue;
                     revenueOpportunityData.push({
                         week: safeString(row.Year) + '-' + safeString(row.Week),
                         value: value,
@@ -1269,7 +1269,7 @@
                         data: {
                             labels: chartLabels,
                             datasets: [{
-                                label: 'Absolute Error',
+                                label: 'Missed Revenue (RF)',
                                 data: chartData,
                                 backgroundColor: chartColors,
                                 borderRadius: 8,
@@ -1287,16 +1287,16 @@
                                         label: function(context) {
                                             var value = context.raw;
                                             if (context.label === 'Sum') {
-                                                return 'Sum: $' + Math.abs(value).toLocaleString();
+                                                return 'Sum: $' + value.toLocaleString();
                                             }
-                                            return '$' + Math.abs(value).toLocaleString();
+                                            return '$' + value.toLocaleString();
                                         }
                                     }
                                 }
                             },
                             scales: {
                                 y: {
-                                    beginAtZero: true,
+                                    beginAtZero: false,
                                     ticks: {
                                         callback: function(value) {
                                             if (value === 0) return '$0';
