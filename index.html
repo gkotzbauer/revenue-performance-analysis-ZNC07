@@ -2336,7 +2336,7 @@
           }
           // Zero-Balance Collection Narrative - Stacked Bar Chart
           var payers = ['1-SELF PAY', '12-HUMANA', '13-TRICARE', '15-UNITED HEALTHCARE', '4-MEDICAID', '5-COMMERCIAL', '18-CIGNA', '3-MEDICARE', '17-AETNA', '2-BCBS'];
-          var categories = ['Collection Data Incomplete', 'Very Low Zero-Balance Collection vs Baseline', 'Low Zero-Balance Collection vs Baseline', 'Unusually High Zero-Balance vs Total Collection', 'Normal range'];
+          var categories = ['Collection data incomplete', 'Very low zero-balance collection vs baseline', 'Low zero-balance collection vs baseline', 'High zero-balance collection vs baseline', 'Unusually high zero-balance vs total collection', 'Normal range'];
           
           // Get last 10 weeks of data
           var last10Weeks = filteredData.slice(-10);
@@ -2381,7 +2381,7 @@
           
           // Create datasets for stacked bar chart
           var datasets = categories.map(function(category, index) {
-            var colors = ['#667eea', '#f093fb', '#48bb78', '#f56565', '#f6ad55'];
+            var colors = ['#667eea', '#f093fb', '#48bb78', '#f56565', '#f6ad55', '#9f7aea'];
             return {
               label: category,
               data: payers.map(function(payer) { return payerData[payer][category]; }),
