@@ -2114,8 +2114,8 @@
           // Helper to get last 6 weeks
           var last6 = filteredData.slice(-6);
           // Visits Per Week
-          var visitsLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
-          var visitsData = last6.map(function(row) { return Math.round(safeNumber(row['Visit Count'])); });
+          var visitsLabels = filteredData.slice(-10).map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
+          var visitsData = filteredData.slice(-10).map(function(row) { return Math.round(safeNumber(row['Visit Count'])); });
           var avgVisits = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Visit Count']); }, 0) / (filteredData.length || 1));
           visitsLabels.push('Avg');
           visitsData.push(avgVisits);
