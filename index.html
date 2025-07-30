@@ -706,10 +706,7 @@
 
 
 
-            <div class="chart-container">
-                <h2>📈 Revenue Performance - Recent 6 Months</h2>
-                <canvas id="revenueChart" width="400" height="200"></canvas>
-            </div>
+
 
             <div class="table-container">
                 <h2>�� Weekly Performance Details - Last 6 Weeks</h2>
@@ -725,6 +722,11 @@
                     </thead>
                     <tbody></tbody>
                 </table>
+            </div>
+
+            <div class="chart-container">
+                <h2>📈 Revenue Performance - Recent 6 Months</h2>
+                <canvas id="revenueChart" width="400" height="200"></canvas>
             </div>
 
             <div class="chart-container">
@@ -1376,11 +1378,11 @@
             var tbody = document.querySelector('#performanceTable tbody');
             if (!tbody) return;
             
-            var last6Weeks = filteredData.slice(-6);
+            var last10Weeks = filteredData.slice(-10);
             var tableHTML = '';
             
-            for (var i = 0; i < last6Weeks.length; i++) {
-                var row = last6Weeks[i];
+            for (var i = 0; i < last10Weeks.length; i++) {
+                var row = last10Weeks[i];
                 var yearWeek = safeString(row.Year) + '-' + safeString(row.Week);
                 var actualRevenue = safeNumber(row['Payment Amount*']);
                 var predictedRevenue = safeNumber(row['Expected Payments (RF)']);
@@ -2385,10 +2387,10 @@
             });
           }
           // New/Existing Avg. Weekly Payments
-          var avgPayLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
-          var avgPayData = last6.map(function(row) { return Math.round(safeNumber(row['Avg. Payments By Payor'])); });
-          var overallAvgPay = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Avg. Payments By Payor']); }, 0) / (filteredData.length || 1));
-          avgPayLabels.push('Avg');
+          var avgPayLabels = filteredData.slice(-10).map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
+          var avgPayData = filteredData.slice(-10).map(function(row) { return Math.round(safeNumber(row['Avg. Payments By Payor'])); });
+          var overallAvgPay = Math.round(filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).reduce(function(sum, row) { return sum + safeNumber(row['Avg. Payments By Payor']); }, 0) / (filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).length || 1));
+          avgPayLabels.push('2025 Avg');
           avgPayData.push(overallAvgPay);
           var avgPayColors = avgPayLabels.map(function(l, i) { return i === avgPayLabels.length-1 ? '#f093fb' : '#667eea'; });
           if (window.avgWeeklyPaymentsChartObj) window.avgWeeklyPaymentsChartObj.destroy();
