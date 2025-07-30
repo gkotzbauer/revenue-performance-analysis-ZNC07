@@ -2216,13 +2216,69 @@
           zbcLabels.push('Avg');
           zbcData.push(avgZBC);
           var zbcColors = zbcLabels.map(function(l, i) { return i === zbcLabels.length-1 ? '#f093fb' : '#48bb78'; });
+
+          // Collection Rate* line (as percentage)
+          var crData = filteredData.slice(-10).map(function(row) { return Math.round(safeNumber(row['Collection Rate*']) * 100); });
+          var avgCR = Math.round(filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).reduce(function(sum, row) { return sum + safeNumber(row['Collection Rate*']); }, 0) / (filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).length || 1) * 100);
+          crData.push(avgCR);
+
           if (window.zeroBalanceCollectionChartObj) window.zeroBalanceCollectionChartObj.destroy();
           var ctxZBC = document.getElementById('zeroBalanceCollectionChart');
           if (ctxZBC) {
             window.zeroBalanceCollectionChartObj = new Chart(ctxZBC.getContext('2d'), {
               type: 'bar',
-              data: { labels: zbcLabels, datasets: [{ label: 'Zero Balance Collection Rate', data: zbcData, backgroundColor: zbcColors, borderRadius: 8, borderSkipped: false }] },
-              options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return Math.round(context.raw) + '%'; } } } }, scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return Math.round(v) + '%'; } } }, x: { ticks: { maxRotation: 45, minRotation: 45 } } } }
+              data: {
+                labels: zbcLabels,
+                datasets: [
+                  {
+                    label: 'Zero Balance Collection Rate',
+                    data: zbcData,
+                    backgroundColor: zbcColors,
+                    borderRadius: 8,
+                    borderSkipped: false
+                  },
+                  {
+                    label: 'Collection Rate*',
+                    data: crData,
+                    type: 'line',
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37,99,235,0.1)',
+                    borderWidth: 3,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#2563eb',
+                    fill: false,
+                    tension: 0.2,
+                    order: 1
+                  }
+                ]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: { display: true },
+                  tooltip: {
+                    callbacks: {
+                      label: function(context) {
+                        if (context.dataset.label === 'Collection Rate*') {
+                          return 'Collection Rate*: ' + Math.round(context.raw) + '%';
+                        }
+                        return Math.round(context.raw) + '%';
+                      }
+                    }
+                  }
+                },
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    ticks: {
+                      callback: function(v) { return Math.round(v) + '%'; }
+                    }
+                  },
+                  x: {
+                    ticks: { maxRotation: 45, minRotation: 45 }
+                  }
+                }
+              }
             });
           }
           // Net Revenue per Visit Gap
