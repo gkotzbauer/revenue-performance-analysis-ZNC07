@@ -2130,9 +2130,9 @@
             });
           }
           // Total Payments Per Week
-          var paymentsLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
-          var paymentsData = last6.map(function(row) { return Math.round(safeNumber(row['Payment Amount*'])); });
-          var avgPayments = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Payment Amount*']); }, 0) / (filteredData.length || 1));
+          var paymentsLabels = filteredData.slice(-10).map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
+          var paymentsData = filteredData.slice(-10).map(function(row) { return Math.round(safeNumber(row['Payment Amount*'])); });
+          var avgPayments = Math.round(filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).reduce(function(sum, row) { return sum + safeNumber(row['Payment Amount*']); }, 0) / (filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).length || 1));
           paymentsLabels.push('Avg');
           paymentsData.push(avgPayments);
           var paymentsColors = paymentsLabels.map(function(l, i) { return i === paymentsLabels.length-1 ? '#f093fb' : '#48bb78'; });
@@ -2146,9 +2146,9 @@
             });
           }
           // Payments Per Visit
-          var ppvLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
-          var ppvData = last6.map(function(row) { return Math.round(safeNumber(row['Avg. Payment per Visit By Payor'])); });
-          var avgPPV = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Avg. Payment per Visit By Payor']); }, 0) / (filteredData.length || 1));
+          var ppvLabels = filteredData.slice(-10).map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
+          var ppvData = filteredData.slice(-10).map(function(row) { return Math.round(safeNumber(row['Avg. Payment per Visit By Payor'])); });
+          var avgPPV = Math.round(filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).reduce(function(sum, row) { return sum + safeNumber(row['Avg. Payment per Visit By Payor']); }, 0) / (filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).length || 1));
           ppvLabels.push('Avg');
           ppvData.push(avgPPV);
           var ppvColors = ppvLabels.map(function(l, i) { return i === ppvLabels.length-1 ? '#f093fb' : '#667eea'; });
@@ -2162,9 +2162,9 @@
             });
           }
           // Zero Balance Payment Gap
-          var zbgLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
-          var zbgData = last6.map(function(row) { return Math.round(safeNumber(row['Zero Balance - Collection * Charges'])); });
-          var avgZBG = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Zero Balance - Collection * Charges']); }, 0) / (filteredData.length || 1));
+          var zbgLabels = filteredData.slice(-10).map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
+          var zbgData = filteredData.slice(-10).map(function(row) { return Math.round(safeNumber(row['Zero Balance - Collection * Charges'])); });
+          var avgZBG = Math.round(filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).reduce(function(sum, row) { return sum + safeNumber(row['Zero Balance - Collection * Charges']); }, 0) / (filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).length || 1));
           zbgLabels.push('Avg');
           zbgData.push(avgZBG);
           var zbgColors = zbgLabels.map(function(l, i) { return i === zbgLabels.length-1 ? '#f093fb' : '#f56565'; });
@@ -2178,9 +2178,9 @@
             });
           }
           // % of Remaining Charges
-          var remainingLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
-          var remainingData = last6.map(function(row) { return Math.round(safeNumber(row['Collection Rate*']) * 100); });
-          var avgRemaining = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Collection Rate*']); }, 0) / (filteredData.length || 1) * 100);
+          var remainingLabels = filteredData.slice(-10).map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
+          var remainingData = filteredData.slice(-10).map(function(row) { return Math.round(safeNumber(row['Collection Rate*']) * 100); });
+          var avgRemaining = Math.round(filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).reduce(function(sum, row) { return sum + safeNumber(row['Collection Rate*']); }, 0) / (filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).length || 1) * 100);
           remainingLabels.push('Avg');
           remainingData.push(avgRemaining);
           var remainingColors = remainingLabels.map(function(l, i) { return i === remainingLabels.length-1 ? '#f093fb' : '#48bb78'; });
@@ -2194,9 +2194,9 @@
             });
           }
           // Denial %
-          var denialLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
-          var denialData = last6.map(function(row) { return Math.round(safeNumber(row['Denial %']) * 100); });
-          var avgDenial = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Denial %']); }, 0) / (filteredData.length || 1) * 100);
+          var denialLabels = filteredData.slice(-10).map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
+          var denialData = filteredData.slice(-10).map(function(row) { return Math.round(safeNumber(row['Denial %']) * 100); });
+          var avgDenial = Math.round(filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).reduce(function(sum, row) { return sum + safeNumber(row['Denial %']); }, 0) / (filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).length || 1) * 100);
           denialLabels.push('Avg');
           denialData.push(avgDenial);
           var denialColors = denialLabels.map(function(l, i) { return i === denialLabels.length-1 ? '#f093fb' : '#f56565'; });
@@ -2210,9 +2210,9 @@
             });
           }
           // Zero Balance Collection Rate
-          var zbcLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
-          var zbcData = last6.map(function(row) { return Math.round(safeNumber(row['Zero Balance Collection Rate']) * 100); });
-          var avgZBC = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['Zero Balance Collection Rate']); }, 0) / (filteredData.length || 1) * 100);
+          var zbcLabels = filteredData.slice(-10).map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
+          var zbcData = filteredData.slice(-10).map(function(row) { return Math.round(safeNumber(row['Zero Balance Collection Rate']) * 100); });
+          var avgZBC = Math.round(filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).reduce(function(sum, row) { return sum + safeNumber(row['Zero Balance Collection Rate']); }, 0) / (filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).length || 1) * 100);
           zbcLabels.push('Avg');
           zbcData.push(avgZBC);
           var zbcColors = zbcLabels.map(function(l, i) { return i === zbcLabels.length-1 ? '#f093fb' : '#48bb78'; });
@@ -2226,9 +2226,9 @@
             });
           }
           // Net Revenue per Visit Gap
-          var nrvLabels = last6.map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
-          var nrvData = last6.map(function(row) { return Math.round(safeNumber(row['NRV Gap Sum ($)'])); });
-          var avgNRV = Math.round(filteredData.reduce(function(sum, row) { return sum + safeNumber(row['NRV Gap Sum ($)']); }, 0) / (filteredData.length || 1));
+          var nrvLabels = filteredData.slice(-10).map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
+          var nrvData = filteredData.slice(-10).map(function(row) { return Math.round(safeNumber(row['NRV Gap Sum ($)'])); });
+          var avgNRV = Math.round(filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).reduce(function(sum, row) { return sum + safeNumber(row['NRV Gap Sum ($)']); }, 0) / (filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).length || 1));
           nrvLabels.push('Avg');
           nrvData.push(avgNRV);
           var nrvColors = nrvLabels.map(function(l, i) { 
