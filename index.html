@@ -2201,8 +2201,8 @@
           }
           // % of Remaining Charges
           var remainingLabels = filteredData.slice(-10).map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
-          var remainingData = filteredData.slice(-10).map(function(row) { return Math.round(safeNumber(row['Collection Rate*']) * 100); });
-          var avgRemaining = Math.round(filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).reduce(function(sum, row) { return sum + safeNumber(row['Collection Rate*']); }, 0) / (filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).length || 1) * 100);
+          var remainingData = filteredData.slice(-10).map(function(row) { return Math.round(safeNumber(row['% of Remaining Charges']) * 100); });
+          var avgRemaining = Math.round(filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).reduce(function(sum, row) { return sum + safeNumber(row['% of Remaining Charges']); }, 0) / (filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).length || 1) * 100);
           remainingLabels.push('2025 Avg');
           remainingData.push(avgRemaining);
           var remainingColors = remainingLabels.map(function(l, i) { return i === remainingLabels.length-1 ? '#f093fb' : '#48bb78'; });
