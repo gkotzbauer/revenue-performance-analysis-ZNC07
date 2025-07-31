@@ -645,7 +645,7 @@
                   <h3 style="margin-bottom: 8px;">Charge Balance Btwn Zero Balance (ZB) & Collection Rate</h3>
                                       <canvas id="zeroBalanceGapChart" width="400" height="300"></canvas>
                     <div style="margin-top: 8px; text-align: left; font-size: 0.97em; color: #444;">
-                      The total charge balance per week using the formula (Zero Balance - Collection) * Charges. A negative balance means the collection rate is higher than the zero balance (ZB) rate. The goal is to be zero or positive.
+                      The total charge balance per week using the formula ((Zero Balance - Collection) * Charges). A negative balance means the collection rate is higher than the zero balance (ZB) rate. The goal is to be zero or positive.
                     </div>
                   </div>
                 <div class="summary-card">
@@ -674,8 +674,11 @@
                 </div>
                 <div class="summary-card">
                   <h3 style="margin-bottom: 8px;">Net Revenue Per Visit Gap</h3>
-                  <canvas id="nrvGapChart" width="400" height="300"></canvas>
-                </div>
+                                      <canvas id="nrvGapChart" width="400" height="300"></canvas>
+                    <div style="margin-top: 8px; text-align: left; font-size: 0.97em; color: #444;">
+                      The Net Revenue Per Visit Gap is weekly sum of the NRV Zero Balance for the week minus Payments per Visit for the week. A positive balance indicates positive performance.
+                    </div>
+                  </div>
               </div>
               </div>
             </div>
