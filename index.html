@@ -607,7 +607,7 @@
               </div>
               <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; gap: 32px;">
                 <div style="display: flex; flex-direction: column; align-items: center;">
-                  <h2 style="margin-bottom: 8px;">Visits Per Week</h2>
+                  <h2 style="margin-bottom: 8px;">Estimated Visits Per Week</h2>
                   <canvas id="visitsPerWeekChart" width="350" height="220"></canvas>
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center;">
@@ -2143,8 +2143,29 @@
           var last6 = filteredData.slice(-6);
           // Visits Per Week
           var visitsLabels = filteredData.slice(-10).map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
-          var visitsData = filteredData.slice(-10).map(function(row) { return Math.round(safeNumber(row['Visit Count'])); });
-          var avgVisits = Math.round(filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).reduce(function(sum, row) { return sum + safeNumber(row['Visit Count']); }, 0) / (filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).length || 1));
+          var visitsData = filteredData.slice(-10).map(function(row) { 
+            var visitCount = safeNumber(row['Visit Count']);
+            // If visit count is 0, calculate estimated visits from payment data
+            if (visitCount === 0) {
+              var paymentAmount = safeNumber(row['Payment Amount*']);
+              var avgPaymentPerVisit = safeNumber(row['Avg. Payment per Visit By Payor']);
+              if (avgPaymentPerVisit > 0) {
+                visitCount = Math.round(paymentAmount / avgPaymentPerVisit);
+              }
+            }
+            return visitCount;
+          });
+          var avgVisits = Math.round(filteredData.filter(function(row) { 
+            var visitCount = safeNumber(row['Visit Count']);
+            if (visitCount === 0) {
+              var paymentAmount = safeNumber(row['Payment Amount*']);
+              var avgPaymentPerVisit = safeNumber(row['Avg. Payment per Visit By Payor']);
+              if (avgPaymentPerVisit > 0) {
+                visitCount = Math.round(paymentAmount / avgPaymentPerVisit);
+              }
+            }
+            return visitCount;
+          }).reduce(function(sum, visitCount) { return sum + visitCount; }, 0) / (filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).length || 1));
           visitsLabels.push('2025 Avg');
           visitsData.push(avgVisits);
           var visitsColors = visitsLabels.map(function(l, i) { return i === visitsLabels.length-1 ? '#f093fb' : '#667eea'; });
@@ -2154,7 +2175,16 @@
             window.visitsPerWeekChartObj = new Chart(ctxVisits.getContext('2d'), {
               type: 'bar',
               data: { labels: visitsLabels, datasets: [{ label: 'Visits', data: visitsData, backgroundColor: visitsColors, borderRadius: 8, borderSkipped: false }] },
-              options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return Math.round(context.raw); } } } }, scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return Math.round(v); } } }, x: { ticks: { maxRotation: 45, minRotation: 45 } } } }
+              options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { 
+                label: function(context) { 
+                  var visitCount = Math.round(context.raw);
+                  var originalVisitCount = safeNumber(filteredData.slice(-10)[context.dataIndex]['Visit Count']);
+                  if (originalVisitCount === 0 && visitCount > 0) {
+                    return visitCount + ' (estimated)';
+                  }
+                  return visitCount;
+                } 
+              } } }, scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return Math.round(v); } } }, x: { ticks: { maxRotation: 45, minRotation: 45 } } } }
             });
           }
           // Total Payments Per Week
