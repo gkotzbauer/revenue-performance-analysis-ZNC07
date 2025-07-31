@@ -615,11 +615,11 @@
                   <canvas id="totalPaymentsPerWeekChart" width="350" height="220"></canvas>
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center;">
-                  <h2 style="margin-bottom: 8px;">New & Existing Payments Per Visit</h2>
+                  <h2 style="margin-bottom: 8px;">Average Payment Per Visit</h2>
                   <canvas id="paymentsPerVisitChart" width="350" height="220"></canvas>
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center;">
-                  <h2 style="margin-bottom: 8px;">New & Existing Avg. Weekly Payments</h2>
+                  <h2 style="margin-bottom: 8px;">Total Weekly Payments</h2>
                   <canvas id="avgWeeklyPaymentsChart" width="350" height="220"></canvas>
                 </div>
               </div>
@@ -1158,7 +1158,7 @@
             
             var diagnosticCounts = {};
             for (var i = 0; i < data2025.length; i++) {
-                var diagnostic = safeString(data2025[i]['Performance Diagnostic']);
+                var diagnostic = safeString(data2025[i]['Performance Diagnostic (RF)']);
                 if (diagnostic) {
                     diagnosticCounts[diagnostic] = (diagnosticCounts[diagnostic] || 0) + 1;
                 }
@@ -1222,7 +1222,7 @@
             // Only include weeks that are Over/Under Performed in the 2025 data
             for (var i = 0; i < data2025.length; i++) {
                 var row = data2025[i];
-                var performance = safeString(row['Performance Diagnostic']);
+                var performance = safeString(row['Performance Diagnostic (RF)']);
                 if (performance === 'Over Performed' || performance === 'Under Performed') {
                     var missedRevenue = Math.round(safeNumber(row['Missed Revenue (RF)']));
                     var value = missedRevenue;
@@ -1430,7 +1430,7 @@
                     revenueColor = '#718096';
                 }
                 
-                var performance = safeString(row['Performance Diagnostic']);
+                var performance = safeString(row['Performance Diagnostic (RF)']);
                 var topWentWell = getTop3ActionItems(safeString(row['Operational - What Went Well']), false);
                 var topCanImprove = getTop3ActionItems(safeString(row['Operational - What Can Be Improved']), false);
                 
@@ -2205,8 +2205,16 @@
           }
           // Payments Per Visit
           var ppvLabels = filteredData.slice(-10).map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
-          var ppvData = filteredData.slice(-10).map(function(row) { return Math.round(safeNumber(row['Avg. Payment per Visit By Payor'])); });
-          var avgPPV = Math.round(filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).reduce(function(sum, row) { return sum + safeNumber(row['Avg. Payment per Visit By Payor']); }, 0) / (filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).length || 1));
+          var ppvData = filteredData.slice(-10).map(function(row) { 
+            var paymentAmount = safeNumber(row['Payment Amount*']);
+            var visitCount = safeNumber(row['Visit Count']);
+            return visitCount > 0 ? Math.round(paymentAmount / visitCount) : 0;
+          });
+          var avgPPV = Math.round(filteredData.filter(function(row) { 
+            var paymentAmount = safeNumber(row['Payment Amount*']);
+            var visitCount = safeNumber(row['Visit Count']);
+            return visitCount > 0 ? paymentAmount / visitCount : 0;
+          }).reduce(function(sum, ppv) { return sum + ppv; }, 0) / (filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).length || 1));
           ppvLabels.push('2025 Avg');
           ppvData.push(avgPPV);
           var ppvColors = ppvLabels.map(function(l, i) { return i === ppvLabels.length-1 ? '#f093fb' : '#667eea'; });
@@ -2488,8 +2496,8 @@
           }
           // New/Existing Avg. Weekly Payments
           var avgPayLabels = filteredData.slice(-10).map(function(row) { return safeString(row.Year) + '-' + safeString(row.Week); });
-          var avgPayData = filteredData.slice(-10).map(function(row) { return Math.round(safeNumber(row['Avg. Payments By Payor'])); });
-          var overallAvgPay = Math.round(filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).reduce(function(sum, row) { return sum + safeNumber(row['Avg. Payments By Payor']); }, 0) / (filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).length || 1));
+          var avgPayData = filteredData.slice(-10).map(function(row) { return Math.round(safeNumber(row['Payment Amount*'])); });
+          var overallAvgPay = Math.round(filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).reduce(function(sum, row) { return sum + safeNumber(row['Payment Amount*']); }, 0) / (filteredData.filter(function(row) { return safeString(row.Year) === '2025'; }).length || 1));
           avgPayLabels.push('2025 Avg');
           avgPayData.push(overallAvgPay);
           var avgPayColors = avgPayLabels.map(function(l, i) { return i === avgPayLabels.length-1 ? '#f093fb' : '#667eea'; });
