@@ -642,9 +642,12 @@
               <h2 style="margin-bottom: 8px;">Revenue Cycle Performance Past Ten (10) Weeks</h2>
               <div class="dashboard-grid">
                 <div class="summary-card">
-                  <h3 style="margin-bottom: 8px;">Rev Cycle Weekly Revenue Gap (Charges)</h3>
-                  <canvas id="zeroBalanceGapChart" width="400" height="300"></canvas>
-                </div>
+                  <h3 style="margin-bottom: 8px;">Charge Balance Btwn ZB & Collection Rate</h3>
+                                      <canvas id="zeroBalanceGapChart" width="400" height="300"></canvas>
+                    <div style="margin-top: 8px; text-align: left; font-size: 0.97em; color: #444;">
+                      The total charge balance per week using the formula (Zero Balance - Collection) * Charges. A negative balance means the collection rate is higher than the zero balance rate. The goal is to be zero or positive.
+                    </div>
+                  </div>
                 <div class="summary-card">
                   <h3 style="margin-bottom: 8px;">Zero Balance Collection Rate</h3>
                   <canvas id="zeroBalanceCollectionChart" width="400" height="300"></canvas>
