@@ -1224,7 +1224,7 @@
                 var row = data2025[i];
                 var performance = safeString(row['Performance Diagnostic']);
                 if (performance === 'Over Performed' || performance === 'Under Performed') {
-                    var missedRevenue = Math.round(safeNumber(row['Missed Revenue']));
+                    var missedRevenue = Math.round(safeNumber(row['Missed Revenue (RF)']));
                     var value = missedRevenue;
                     revenueOpportunityData.push({
                         week: safeString(row.Year) + '-' + safeString(row.Week),
@@ -1297,7 +1297,7 @@
                         data: {
                             labels: chartLabels,
                             datasets: [{
-                                label: 'Missed Revenue',
+                                label: 'Missed Revenue (RF)',
                                 data: chartData,
                                 backgroundColor: chartColors,
                                 borderRadius: 8,
